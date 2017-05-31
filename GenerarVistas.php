@@ -44,7 +44,7 @@ function crearVistas($tabla){
     //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_SHOWCURRENT_View.php","w+");
 }
 function crearADD($tabla){
-    $file=fopen("/var/www/html/iujulio/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     var_dump($atributos);
    // exit;
@@ -105,7 +105,7 @@ function crearADD($tabla){
 }
 
 function crearArrayFormulario($tabla, $atributos){
-    $file = fopen("/var/www/html/iujulio/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
+    $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
         <?php
         //Formulario para cada vista.
@@ -116,8 +116,8 @@ function crearArrayFormulario($tabla, $atributos){
                     $str .='
                    '.$i . '=>array(
                    \'name\' => \'' . $clave->name . '\',
-                   \'type\' => \'' . $clave['type']. '\',';
-                  /* \'value\' => \'' . $clave->value . '\',
+                   \'type\' => \'' . calcularType($clave->type) . '\', ';
+                   /*\'value\' => \'' . $clave->value . '\',
                    \'min\' => \'' . $clave->min . '\',
                    \'max\' => \'' . $clave->max . '\',
                    \'size\' => \'' . $clave->size . '\',
