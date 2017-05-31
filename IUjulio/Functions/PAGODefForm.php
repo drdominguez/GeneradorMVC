@@ -1,13 +1,13 @@
 <?php
 
-//Definición del formulario para insertar y consultar pagos
+//Definición del formulario para insertar pagos
 $form = array(
 
       0 => array(
         'type' => 'text',
         'name' => 'CLIENTE_DNI',
         'value' => '',
-        'size' => 10,
+        'size' => 50,
         'required' => true,
         'pattern' => '',
         'validation' => '',
@@ -17,7 +17,7 @@ $form = array(
         'type' => 'text',
         'name' => 'PAGO_CONCEPTO',
         'value' => '',
-        'size' => 75,
+        'size' => 155,
         'required' => true,
         'pattern' => '',
         'validation' => '',
