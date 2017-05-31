@@ -154,7 +154,7 @@ function crearArrayFormulario($tabla, $atributos){
 
 
 }
-
+//*****************************************************************Faltan por añadir*******************************************************************************************
 function calcularType($tipo){
     switch ($tipo){
         case 16:
