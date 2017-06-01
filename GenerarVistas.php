@@ -29,18 +29,19 @@ $arrayTablas = listarTablas();//Llamamos a la funcion listarTablas() para que no
 foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
    //Llamamos a la funcion crear vistas
     crearADD($tabla);
+    crearSHOWALL($tabla);
   /*  crearSEARCH($tabla);
     crearEDIT($tabla);
     crearDELETE($tabla);
-    crearSHOWALL($tabla);
+    
     crearSHOWCURRENT($tabla);*/
 }
 echo "Vistas creadas";
 
 function crearADD($tabla){
+    echo "Creando vista ADD ' . $tabla . '...\n";
     $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-    var_dump($atributos);
    // exit;
     $str='<?php
      class '. strtoupper($tabla) . '_ADD { 
@@ -86,17 +87,7 @@ function crearADD($tabla){
                      <ul class="form-style-1">
 <?php
                     createForm($lista,$DefForm,$strings,\'\',true,false);
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+   
 ?>
                     <input type=\'submit\' name=\'accion\' onclick="return valida_envia4()" value=<?php
                         echo $strings[\'Continuar\'] ?>>
@@ -122,8 +113,17 @@ function crearADD($tabla){
     crearArrayFormulario($tabla,$atributos);//Llamamos a la funcion crear el array del formulario, y le pasamos la tabla y los atributos
 }
 
+
+
+function crearSHOWALL($tabla){
+ $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
+
+
+
+}
+
 function crearArrayFormulario($tabla, $atributos){
-    echo "Creando formularios";
+    echo "Creando formulario ' . $tabla . '\n";
 
     $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
