@@ -108,7 +108,7 @@ if (!isset($_REQUEST['accion'])){
 					if (!tienePermisos('Actividad_Add')) {
 						new Mensaje('No tienes los permisos necesarios', 'ACTIVIDAD_Controller.php');
 					} else {
-						new Actividad_Add();
+						new ACTIVIDAD_ADD();
 					}
 
 			} else {

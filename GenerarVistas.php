@@ -66,7 +66,6 @@ function crearADD($tabla){
     
     include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';           
         include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
-        
         $lista = array(';
         $i=0;
        foreach($atributos as $valor){
@@ -135,6 +134,8 @@ function crearArrayFormulario($tabla, $atributos){
     $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
         <?php
+        
+
         //Formulario para cada vista.
         $Form = array(' ;
         $i=0;
@@ -143,37 +144,39 @@ function crearArrayFormulario($tabla, $atributos){
                     $str .='
                    '.$i . '=>array(
                    \'name\' => \'' . $clave->name . '\',
-                   \'type\' => \'' . calcularType($clave->type) . '\', ';
-                   /*\'value\' => \'' . $clave->value . '\',
-                   \'min\' => \'' . $clave->min . '\',
-                   \'max\' => \'' . $clave->max . '\',
-                   \'size\' => \'' . $clave->size . '\',
-                   \'required\' => \'' . $clave->required . '\',
-                   \'pattern\' => \'' . $clave->pattern . '\',
-                   \'validation\' => \'' . $clave->validation . '\',
-                   \'readonly\' => \'' . $clave->readonly . '\'  */
+                   \'type\' => \'' . calcularType($clave->type) . '\', 
+                   \'value\' => \'\',
+                   \'min\' => \'\',
+                   \'max\' => \'\',
+                   \'size\' => \'\',
+                   \'required\' => \'\',
+                   \'pattern\' => \'\',
+                   \'validation\' => \'\',
+                   \'readonly\' => \'\'  ';
                    $str.= '
                    )';
                 }else{
                     $str .=',
                    '.$i.'=>array(
                    \'name\' => \'' . $clave->name . '\',
-                   \'type\' => \'' . calcularType($clave->type) . '\',';
-                   /* \'value\' => \'' . $clave->value . '\',
-                   \'min\' => \'' . $clave->min . '\',
-                   \'max\' => \'' . $clave->max . '\',
-                   \'size\' => \'' . $clave->size . '\',
-                   \'required\' => \'' . $clave->required . '\',
-                   \'pattern\' => \'' . $clave->pattern . '\',
-                   \'validation\' => \'' . $clave->validation . '\',
-                   \'readonly\' => \'' . $clave->readonly . '\'*/
+                   \'type\' => \'' . calcularType($clave->type) . '\', 
+                   \'value\' => \'\',
+                   \'min\' => \'\',
+                   \'max\' => \'\',
+                   \'size\' => \'\',
+                   \'required\' => \'\',
+                   \'pattern\' => \'\',
+                   \'validation\' => \'\',
+                   \'readonly\' => \'\' ';
                    $str.= '
                    )';
                 }
                    $i++;
                 }
                 $str.='
-                );';
+                );
+
+                $DefForm=$Form;';
 
 
             fwrite($file,$str);
