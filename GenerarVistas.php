@@ -48,13 +48,17 @@ function crearADD($tabla){
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     var_dump($atributos);
    // exit;
-    $str='<?php class '. strtoupper($tabla) . '_ADD { 
+    $str='<?php
+     class '. strtoupper($tabla) . '_ADD { 
           function __construct(){ 
                 $this->render();
-                }
-          function render(){ 
+          }
+                
+    function render(){ 
+    
     include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';           
         include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+        
         $lista = array(';
         $i=0;
        foreach($atributos as $valor){
@@ -66,26 +70,38 @@ function crearADD($tabla){
            $i++;
         }
     $str .= ');
+
 ?>
- <title>Añadir</title>
+     <title>Añadir</title>
     	</h2>
 		</p>
 		<p>
 			<h1>
 			<span class=\"form-title\">
-			<?php echo	$strings[\'Insertar Actividad\'] ?><br>
+<?php           echo $strings[\'Insertar' . strtoupper($tabla) . '  \'] ?><br>
 			</h1>
             <h3>
-					<form id="form" action="../Controllers/' . strtoupper($tabla) . '_Controller.php?"
-					 method="POST" enctype="multipart/form-data" >
+				<form id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\'>
                      <ul class="form-style-1">
-                    <?php
+<?php
                     createForm($lista,$DefForm,$strings,\'\',true,false);
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
 ?>
-                    <input type="submit" name="accion" onclick="return valida_envia4()" value="Continuar">
+                    <input type=\'submit\' name=\'accion\' onclick="return valida_envia4()" value=<?php
+                        echo $strings[\'Continuar\'] ?>>
 				    </form>
 <?php
-				echo \'<a class="form-link" href=\"../Controllers/' . strtoupper($tabla) . '_Controller.php'.'\\\'>\' . $strings[\'Volver\'] . " </a>";
+				echo \'<a class="form-link" href=\\\' ' . strtoupper($tabla) . '_Controller.php\\\'>'. '. $strings[\'Volver\'] . " </a>";
 ?>
 				<br>
 
@@ -96,6 +112,7 @@ function crearADD($tabla){
 
 <?php
 } //fin metodo render
+
 }
 ?>';
 
