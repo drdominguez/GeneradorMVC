@@ -86,7 +86,7 @@ function crearADD($tabla){
 		<p>
 			<h1>
 			<span class=\"form-title\">
-<?php           echo $strings[\'Insertar' . strtoupper($tabla) . '  \'] ?><br>
+<?php           echo $strings[\'Insertar ' . strtoupper($tabla) . '  \'] ?><br>
 			</h1>
             <h3>
 				<form id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\'>
@@ -109,7 +109,7 @@ function crearADD($tabla){
                         echo $strings[\'Continuar\'] ?>>
 				    </form>
 <?php
-				echo \'<a class="form-link" href=\\\' ' . strtoupper($tabla) . '_Controller.php\\\'>'. '. $strings[\'Volver\'] . " </a>";
+				echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
 ?>
 				<br>
 
@@ -130,6 +130,8 @@ function crearADD($tabla){
 }
 
 function crearArrayFormulario($tabla, $atributos){
+    echo "Creando formularios";
+
     $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
         <?php

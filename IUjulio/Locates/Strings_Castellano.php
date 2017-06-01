@@ -230,6 +230,7 @@ $strings = array(
     'Modificar' => 'Modificar',
     'Borrar' => 'Borrar',
     'Insertar Actividad' => 'Insertar Actividad',
+    'Insertar ACTIVIDAD' => 'Insertar Actividad',
     'Modificar Actividad' => 'Modificar Actividad',
     'Borrar Actividad' => 'Borrar Actividad',
     'Insertar' => 'Insertar',
