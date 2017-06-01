@@ -208,6 +208,43 @@ $strings = array(
     'El pago ha sido borrado correctamente'=>'El pago ha sido borrado correctamente',
     'Modificar Pago' =>'Modificar Pago',
     'El pago se ha modificado correctamente'=>'El pago se ha modificado correctamente',
-    'El DNI introducido no pertenece a ningun cliente'=>'El DNI introducido no pertenece a ningun cliente'
+    'El DNI introducido no pertenece a ningun cliente'=>'El DNI introducido no pertenece a ningun cliente',
+
+
+	//GESTION ACTIVIDADES
+
+    'La actividad ya existe en la base de datos' => 'La actividad ya existe en la base de datos',
+    'Introduzca un valor para la clave de la actividad' => 'Introduzca un valor para la clave de la actividad',
+    'La actividad ha sido borrada correctamente' => 'La actividad ha sido borrada correctamente',
+    'La actividad no existe' => 'La actividad no existe',
+    'La actividad se ha modificado con exito' => 'La actividad se ha modificado con éxito',
+    'Se ha producido un error en la modificacion de la actividad' => 'Se ha producido un error en la modificación de la actividad',
+    'Añadida con exito' => 'Añadida con exito',
+    'Gestión de Actividades' => 'Gestión de Actividades',
+    'Consultar pagina' => 'Consultar página',
+    'ACTIVIDAD_ID' => 'Identificador Actividad',
+    'ACTIVIDAD_NOMBRE' => 'Nombre Actividad',
+    'ACTIVIDAD_PRECIO' => 'Precio Actividad',
+    'ACTIVIDAD_DESCRIPCION' => 'Descripción actividad',
+    'CATEGORIA_ID' => 'Identificador categoría',
+    'Modificar' => 'Modificar',
+    'Borrar' => 'Borrar',
+    'Insertar Actividad' => 'Insertar Actividad',
+    'Modificar Actividad' => 'Modificar Actividad',
+    'Borrar Actividad' => 'Borrar Actividad',
+    'Insertar' => 'Insertar',
+    'Consultar actividad' => 'Consultar actividad',
+    'ACTIVO' => 'Activo',
+    'CONSULTAR BORRADO' => 'Consultar Inactivas',
+    'Consultar' => 'Consultar',
+    'Continuar' => 'Continuar',
+	'Lunes' => 'Lunes',
+	'Martes' => 'Martes',
+	'Miercoles' => 'Miercoles',
+	'Jueves' => 'Jueves',
+	'Viernes' => 'Viernes',
+	'Sabado' => 'Sabado',
+	'Domingo' => 'Domingo',
+    'CATEGORIA_NOMBRE' => 'Nombre categoría'
 )
 ?>

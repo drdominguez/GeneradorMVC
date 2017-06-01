@@ -98,7 +98,7 @@ function crearADD($tabla){
 } //fin metodo render
 }
 ?>';
-    echo "********************************" . $file;
+
     fwrite($file,$str);
     
     crearArrayFormulario($tabla,$atributos);//Llamamos a la funcion crear el array del formulario, y le pasamos la tabla y los atributos
