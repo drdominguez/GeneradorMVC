@@ -116,7 +116,141 @@ function crearADD($tabla){
 
 
 function crearSHOWALL($tabla){
+ echo "Creando vista SHOWALL ' . $tabla . '...\n";
  $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
+ $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
+ $str='<?php
+     class '. strtoupper($tabla) . '_DEFAULT { 
+        function __construct($array, $volver){
+            $this->datos = $array;
+            $this->volver = $volver;
+            $this->render();
+        }
+                
+    function render(){ 
+    
+?>
+    <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" /></head>
+            <p>
+                <h2>
+                    <?php
+
+
+                    include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+
+
+                    ?>
+                    <div>
+                        <?php
+
+                        $lista = array(';
+                        $i=0;
+       foreach($atributos as $valor){
+           if($i==0){
+               $str .= '\'' . $valor->name.'\'';
+           }else{
+               $str .= ',\'' . $valor->name. '\'';
+           }
+           $i++;
+        }
+    $str .= ');
+
+?>
+    <head>
+        <link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../Styles/print.css" media="print" />
+    </head>
+        <div id="wrapper">
+
+            <nav>
+
+        <div class="menu">
+
+
+    <ul>
+        <li><a href="../Functions/Desconectar.php"><?php echo  $strings[\'Cerrar Sesión\']; ?></a></li>
+        <li><?php echo $strings[\'Usuario\'].": ". $_SESSION[\'login\']; ?></li>
+
+    </ul>
+
+        <?php echo \'<a href=\\\'\' . $this->volver . "\'>" . $strings[\'Volver\'] . " </a>"; ?></li>
+        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Consultar\']?>\'><?php echo $strings[\'Consultar\']?></a>
+        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Insertar\']?>\'><?php echo $strings[\'Insertar\']?></a>
+        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'CONSULTAR BORRADO\']?>\'><?php echo $strings[\'CONSULTAR BORRADO\']?></a>
+
+        </div>
+            </nav>
+                <table id="btable" border = 1>
+                    <tr>
+<?php
+    foreach($lista as $titulo){
+
+        echo "<th>";
+
+?>
+<?php
+        echo $strings[$titulo];
+?>
+        </th>
+<?php
+        }
+?>
+        </tr>
+<?php
+    for ($j=0;$j<count($this->datos);$j++){
+        echo "<tr>";
+         foreach ($this->datos[$j] as $clave => $valor) {
+            for ($i = 0; $i < count($lista); $i++) {
+                if ($clave === $lista[$i]) {
+?>
+
+<?php
+
+                    echo "<td>";
+
+
+                    echo $valor;
+
+                    echo "</td>";
+                }
+            }
+        }
+?>
+
+        <td>
+            <a href=\''. strtoupper($tabla) . '_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Modificar\']; ?>\'><?php echo $strings[\'Modificar\'] ?></a>
+        </td>
+        <td>
+            <a href=\''. strtoupper($tabla) .'_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Borrar\']; ?>\'><?php echo $strings[\'Borrar\'] ?></a>
+        </td>
+
+        <?php
+
+            echo "<tr>";
+
+    }
+?>
+
+        </table>
+
+        </div>
+                    <h3>
+            <p>
+                <?php
+                echo \'<a class="form-link" href=\\\'\' . $this->volver . "\'>" . $strings[\'Volver\'] . " </a>";
+                ?>
+                </h3>
+            </p>
+
+        </div>
+
+        <?php
+    } //fin metodo render
+
+}';
+    fwrite($file,$str);
+    
+    crearArrayFormulario($tabla,$atributos);//Llamamos a la funcion crear el array del formulario, y le pasamos la tabla y los atributos
 
 
 

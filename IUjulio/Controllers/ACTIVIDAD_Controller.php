@@ -202,7 +202,7 @@ if (!isset($_REQUEST['accion'])){
 				$actividad = get_data_form();
 			}
 			$datos = $actividad->ConsultarTodo();
-			if (!tienePermisos('Actividad_Default')) {
+			if (!tienePermisos('ACTIVIDAD_DEFAULT')) {
 				new Mensaje('No tienes los permisos necesarios', '../Views/DEFAULT_Vista.php');
 			} else {
 				new Actividad_default($datos, '../Views/DEFAULT_Vista.php');
