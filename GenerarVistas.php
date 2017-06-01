@@ -27,22 +27,16 @@ function listarTablas() //Creamos una funcion para que nos devuelva todas las ta
 
 $arrayTablas = listarTablas();//Llamamos a la funcion listarTablas() para que nos devuelva todas las tablas. Le llamamos $arrayTablas
 foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
-    crearVistas($tabla);//Llamamos a la funcion crear vistas
+   //Llamamos a la funcion crear vistas
     crearADD($tabla);
-    crearSEARCH($tabla);
+  /*  crearSEARCH($tabla);
     crearEDIT($tabla);
     crearDELETE($tabla);
     crearSHOWALL($tabla);
-    crearSHOWCURRENT($tabla);
+    crearSHOWCURRENT($tabla);*/
 }
 echo "Vistas creadas";
-function crearVistas($tabla){
-    //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_SEARCH_View.php","w+");
-    //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_EDIT_View.php","w+");
-    //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_DELETE_View.php","w+");
-    //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_SHOWALL_View.php","w+");
-    //fopen("/var/www/html/iujulio/Views/" . strtoupper($tabla) . "_SHOWCURRENT_View.php","w+");
-}
+
 function crearADD($tabla){
     $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
@@ -85,7 +79,7 @@ function crearADD($tabla){
 		<p>
 			<h1>
 			<span class=\"form-title\">
-<?php           echo $strings[\'Insertar ' . strtoupper($tabla) . '  \'] ?><br>
+<?php           echo $strings[\'Insertar ' . strtoupper($tabla) . '\'] ?><br>
 			</h1>
             <h3>
 				<form id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\'>
@@ -148,11 +142,11 @@ function crearArrayFormulario($tabla, $atributos){
                    \'value\' => \'\',
                    \'min\' => \'\',
                    \'max\' => \'\',
-                   \'size\' => \'\',
-                   \'required\' => \'\',
+                   \'size\' => \'' . $clave->length . '\',
+                   \'required\' => \'true\',
                    \'pattern\' => \'\',
                    \'validation\' => \'\',
-                   \'readonly\' => \'\'  ';
+                   \'readonly\' => \'false\'  ';
                    $str.= '
                    )';
                 }else{
@@ -163,11 +157,11 @@ function crearArrayFormulario($tabla, $atributos){
                    \'value\' => \'\',
                    \'min\' => \'\',
                    \'max\' => \'\',
-                   \'size\' => \'\',
-                   \'required\' => \'\',
+                    \'size\' => \'' . $clave->length . '\',
+                   \'required\' => \'true\',
                    \'pattern\' => \'\',
                    \'validation\' => \'\',
-                   \'readonly\' => \'\' ';
+                   \'readonly\' => \'false\'  ';
                    $str.= '
                    )';
                 }
@@ -187,29 +181,29 @@ function crearArrayFormulario($tabla, $atributos){
 //*****************************************************************Faltan por añadir*******************************************************************************************
 function calcularType($tipo){
     switch ($tipo){
-        case 16:
-            $toret='BIT';
-            break;
         case 1:
-            $toret='BOOL';
-            break;
-        case 253:
-            $toret='VARCHAR';
-            break;
-        case 246:
-            $toret='DECIMAL';
+            $toret='number';
             break;
         case 3:
-            $toret='INTEGER';
+            $toret='number';
             break;
         case 10:
-            $toret='DATE';
+            $toret='date';
+            break;
+        case 11:
+            $toret='time';
+            break;
+        case 247:
+            $toret='select';
+            break;
+        case 253:
+            $toret='text';
             break;
         case 252:
-            $toret='TEXT';
+            $toret='text';
             break;
         default:
-            echo "Rodeiro no nos putes MÁS anda!!";
+            $toret='';
     }
     return $toret;
 }
