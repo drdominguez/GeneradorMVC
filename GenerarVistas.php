@@ -142,19 +142,30 @@ function crearSHOWALL($tabla){
                     ?>
                     <div>
                         <?php
+/*
+                           $lista = array();
 
+       foreach($this->datos as $clave => $valor){
+               array_push($lista, $valor->name);
+           }
+           */
+
+           
                         $lista = array(';
                         $i=0;
        foreach($atributos as $valor){
-           if($i==0){
+           if($i==0 && $i<5){
                $str .= '\'' . $valor->name.'\'';
            }else{
+            if($i<5){
                $str .= ',\'' . $valor->name. '\'';
+            }
            }
            $i++;
         }
     $str .= ');
 
+        
 ?>
     <head>
         <link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
@@ -357,6 +368,8 @@ function listarAtributos($tabla){
     }
 
 }
+
+
 
 
 function createForm($listFields, $fieldsDef, $strings, $values, $required, $noedit) {
