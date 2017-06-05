@@ -29,16 +29,14 @@ foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
     crearADD($tabla);
     crearSHOWALL($tabla);
     crearDELETE($tabla);
-  /*  crearSEARCH($tabla);
     crearEDIT($tabla);
-    
-    
+  /*  crearSEARCH($tabla);
     crearSHOWCURRENT($tabla);*/
 }
 echo "Vistas creadas";
 
 function crearADD($tabla){
-    echo "Creando vista ADD ' . $tabla . '...\n";
+    echo "Creando vista ADD " . $tabla . "...\n";
     $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
    // exit;
@@ -118,7 +116,8 @@ function crearADD($tabla){
 
 
 function crearSHOWALL($tabla){
- echo "Creando vista SHOWALL ' . $tabla . '...\n";
+ echo "Creando vista SHOWALL " . $tabla . "...
+ ";
  $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
@@ -263,7 +262,8 @@ function crearSHOWALL($tabla){
 
 function crearDELETE($tabla){
 
-echo "Creando vista DELETE ' . $tabla . '...\n";
+echo "Creando vista DELETE " . $tabla . "...
+";
  $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
@@ -330,10 +330,86 @@ class '. strtoupper($tabla) . '_delete{
 
 }
 
+function crearEDIT($tabla){
+
+echo "Creando vista EDIT " . $tabla . "...";
+ $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+$str='<?php
+class '. strtoupper($tabla) . '_Edit{
+//VISTA PARA MODIFICAR 
+    private $valores;
+    function __construct($valores,$valores2){
+        $this->valores=$valores;
+        $this->valores2=$valores2;
+        $this->render();
+    }
+    function render(){
+        ?>
+        <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
+            <script type="text/javascript" src="../js/<?php echo $_SESSION[\'IDIOMA\']?>_validate.js"></script></head>
+        <div>
+            <p>
+            <h2>
+                <?php
+                include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+                include \'../Functions/ include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                //include \'../Functions/LibraryFunctions.php\';
+         $lista = array(';
+        $i=0;
+       foreach($atributos as $valor){
+           if($i==0){
+               $str .= '\'' . $valor->name.'\'';
+           }else{
+               $str .= ',\'' . $valor->name. '\'';
+           }
+           $i++;
+        }
+    $str .= ');                ?>
+                
+            </h2>
+            </p>
+            <p>
+            <h1>
+                <span class="form-title">
+                <?php echo $strings[\'Modificar ' . strtoupper($tabla) . '\']?><br>
+            </h1>
+            <h3>
+
+                <form  id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                    <ul class="form-style-1">
+                    <?php
+                    createForm($lista,$DefForm,$strings,$this->valores,array('ACTIVIDAD_NOMBRE'=>false),array('ACTIVIDAD_ID'=>true,'ACTIVIDAD_PRECIO'=>false,'ACTIVIDAD_DESCRIPCION'=>false,'CATEGORIA_ID'=>false,'ACTIVO'=>false));
+                    ?>
+                    <li> Categoria </li>
+                    <select name = "CATEGORIA_ID">
+                    <?php
+                    listarCategorias();
+                    ?>
+                
+                    </select> <br><br><br>
+
+                
+                    <input type=\'submit\' name=\'accion\' onclick="return valida_envia4()" value=<?php echo $strings[\'Modificar\'] ?>>
+                </form>
+                <?php
+                echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
+                ?>
+            </h3>
+            </p>
+
+        </div>
+
+        <?php
+    } //fin metodo render
+}
+?>';
+fwrite($file,$str);
+}
+
 
 
 function crearArrayFormulario($tabla, $atributos){
-    echo "Creando formulario ' . $tabla . '\n";
+    echo "Creando formulario ". $tabla . "\n";
 
     $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
