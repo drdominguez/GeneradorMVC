@@ -29,8 +29,8 @@ foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
     crearADD($tabla);
     crearSHOWALL($tabla);
     crearDELETE($tabla);
-    crearEDIT($tabla);
-  /*  crearSEARCH($tabla);
+    /*crearEDIT($tabla);
+  crearSEARCH($tabla);
     crearSHOWCURRENT($tabla);*/
 }
 echo "Vistas creadas";
@@ -377,9 +377,7 @@ class '. strtoupper($tabla) . '_Edit{
 
                 <form  id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
                     <ul class="form-style-1">
-                    <?php
-                    createForm($lista,$DefForm,$strings,$this->valores,array('ACTIVIDAD_NOMBRE'=>false),array('ACTIVIDAD_ID'=>true,'ACTIVIDAD_PRECIO'=>false,'ACTIVIDAD_DESCRIPCION'=>false,'CATEGORIA_ID'=>false,'ACTIVO'=>false));
-                    ?>
+                    
                     <li> Categoria </li>
                     <select name = "CATEGORIA_ID">
                     <?php
