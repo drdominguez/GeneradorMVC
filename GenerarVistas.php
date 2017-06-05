@@ -9,7 +9,6 @@ function conectarBD(){//Creamos una funcion para conectarnos a la BD
     return $bd;
 }
 
-
 function listarTablas() //Creamos una funcion para que nos devuelva todas las tablas de la BD
 {
     $mysqli2 = conectarBD();
@@ -24,15 +23,15 @@ function listarTablas() //Creamos una funcion para que nos devuelva todas las ta
         return $tables;
     }
 }
-
 $arrayTablas = listarTablas();//Llamamos a la funcion listarTablas() para que nos devuelva todas las tablas. Le llamamos $arrayTablas
 foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
    //Llamamos a la funcion crear vistas
     crearADD($tabla);
     crearSHOWALL($tabla);
+    crearDELETE($tabla);
   /*  crearSEARCH($tabla);
     crearEDIT($tabla);
-    crearDELETE($tabla);
+    
     
     crearSHOWCURRENT($tabla);*/
 }
@@ -52,14 +51,10 @@ function crearADD($tabla){
     function render(){ 
     
 ?>
-	<head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
-		<script type="text/javascript" src="../js/<?php  echo $_SESSION[\'IDIOMA\']?>_validate.js"></script></head>
-	<div>
-		<p>
-			<h2>
+
 <?php
     
-    include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';           
+         
         include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
         $lista = array(';
         $i=0;
@@ -74,12 +69,19 @@ function crearADD($tabla){
     $str .= ');
 
 ?>
-     <title>Añadir</title>
-    	</h2>
-		</p>
-		<p>
-			<h1>
-			<span class=\"form-title\">
+       <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
+ <script type="text/javascript" src="../js/<?php  echo $_SESSION[\'IDIOMA\'] ?>_validate.js"></script></head>
+            <p>
+            <h2>
+                <?php
+                include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+                  ?>
+            </h2>
+            </p>
+            <p>
+            <h1>
+             
+             <title>Añadir</title>
 <?php           echo $strings[\'Insertar ' . strtoupper($tabla) . '\'] ?><br>
 			</h1>
             <h3>
@@ -130,17 +132,7 @@ function crearSHOWALL($tabla){
     function render(){ 
     
 ?>
-    <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" /></head>
-            <p>
-                <h2>
-                    <?php
-
-
-                    include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
-
-
-                    ?>
-                    <div>
+   
                         <?php
 /*
                            $lista = array();
@@ -164,31 +156,32 @@ function crearSHOWALL($tabla){
            $i++;
         }
     $str .= ');
+    ?>
 
-        
-?>
-    <head>
+       <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" /></head>
+            <p>
+                <h2>
+                    <?php
+                    include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+                    ?>
+                    <head>
         <link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
         <link rel="stylesheet" type="text/css" href="../Styles/print.css" media="print" />
     </head>
         <div id="wrapper">
-
             <nav>
-
         <div class="menu">
-
-
     <ul>
         <li><a href="../Functions/Desconectar.php"><?php echo  $strings[\'Cerrar Sesión\']; ?></a></li>
         <li><?php echo $strings[\'Usuario\'].": ". $_SESSION[\'login\']; ?></li>
-
     </ul>
-
         <?php echo \'<a href=\\\'\' . $this->volver . "\'>" . $strings[\'Volver\'] . " </a>"; ?></li>
         <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Consultar\']?>\'><?php echo $strings[\'Consultar\']?></a>
         <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Insertar\']?>\'><?php echo $strings[\'Insertar\']?></a>
         <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'CONSULTAR BORRADO\']?>\'><?php echo $strings[\'CONSULTAR BORRADO\']?></a>
 
+
+    
         </div>
             </nav>
                 <table id="btable" border = 1>
@@ -266,6 +259,78 @@ function crearSHOWALL($tabla){
 
 
 }
+
+
+function crearDELETE($tabla){
+
+echo "Creando vista DELETE ' . $tabla . '...\n";
+ $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+ $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
+ $str='<?php
+class '. strtoupper($tabla) . '_delete{
+    //VISTA PARA BORRAR 
+    private $valores;
+    function __construct($valores){
+        $this->valores=$valores;
+        $this->render();
+    }
+    function render(){
+        
+                
+                include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                   $lista = array(';
+        $i=0;
+       foreach($atributos as $valor){
+           if($i==0){
+               $str .= '\'' . $valor->name.'\'';
+           }else{
+               $str .= ',\'' . $valor->name. '\'';
+           }
+           $i++;
+        }
+    $str .= ');
+                ?>
+                 <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
+ <script type="text/javascript" src="../js/<?php  echo $_SESSION[\'IDIOMA\'] ?>_validate.js"></script></head>
+            <p>
+            <h2>
+                <?php
+                include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+                  ?>
+            </h2>
+            </p>
+            <p>
+            <h1>
+            <span class="form-title">
+                <?php echo $strings[\'Borrar ' . strtoupper($tabla) . '\'] ?><br>
+            </h1>
+            <h3>
+
+                <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                    <ul class="form-style-1">
+                    <?php
+                    createForm($lista,$DefForm,$strings,$this->valores,false,true);
+                    ?>
+                    <input type=\'submit\' name=\'accion\' value=<?php echo $strings[\'Borrar\'] ?>>
+                </form>
+                <?php
+                    echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
+            </h3>
+            </p>
+
+        </div>
+
+        <?php
+    } //fin metodo render
+}
+?>';
+
+ fwrite($file,$str);
+
+
+}
+
+
 
 function crearArrayFormulario($tabla, $atributos){
     echo "Creando formulario ' . $tabla . '\n";
@@ -357,6 +422,21 @@ function calcularType($tipo){
 function listarAtributos($tabla){
     $mysqli2 = conectarBD();
     $sql = 'SELECT * FROM ' . $tabla . ';';
+
+    if (!($resultado = $mysqli2->query($sql))) {
+        return 'Error en la consulta sobre la base de datos';
+    } else {
+        $finfo = mysqli_fetch_fields($resultado);
+
+
+        return $finfo;
+    }
+
+}
+
+function obtenerClave($tabla){
+     $mysqli2 = conectarBD();
+    $sql = 'SHOW KEYS FROM ' .$tabla .' WHERE Key_name = \'PRIMARY\'';
 
     if (!($resultado = $mysqli2->query($sql))) {
         return 'Error en la consulta sobre la base de datos';
