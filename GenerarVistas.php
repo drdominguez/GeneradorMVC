@@ -29,10 +29,9 @@ foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
     crearADD($tabla);
     crearSHOWALL($tabla);
     crearDELETE($tabla);
-    
+    crearEDIT($tabla);
   /*  crearSEARCH($tabla);
-    crearSHOWCURRENT($tabla);
-    crearEDIT($tabla);*/
+    crearSHOWCURRENT($tabla);*/
 }
 echo "Vistas creadas";
 
