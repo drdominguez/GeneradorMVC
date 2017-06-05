@@ -247,6 +247,8 @@ $strings = array(
 	'Sabado' => 'Sabado',
 	'Domingo' => 'Domingo',
     'Insertar ACTIVIDAD'=>'INSERTAR ACTIVIDAD',
+    'LUGAR_NOMBRE' => 'Nombre Lugar',
+    'Consultar ACTIVIDAD' => 'CONSULTAR ACTIVIDAD',
     'CATEGORIA_NOMBRE' => 'Nombre categoría'
 )
 ?>

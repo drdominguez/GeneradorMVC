@@ -8,6 +8,7 @@ include '../Views/MENSAJE_Vista.php';
 include '../Views/ACTIVIDAD_ADD_HORAS_Vista.php';
 
 
+//error_reporting (0);
 
 
 if (!IsAuthenticated()){
@@ -21,6 +22,8 @@ for ($z=0;$z<count($actividades);$z++){
 	include $actividades[$z];
 }
 
+include '../Views/ACTIVIDAD_SHOW_CURRENT_Vista.php';
+include '../Views/ACTIVIDAD_SEARCH_Vista.php';
 
 function get_data_form(){
 
@@ -143,6 +146,17 @@ if (!isset($_REQUEST['accion'])){
 				new Mensaje($respuesta, 'ACTIVIDAD_Controller.php');
 			}
 			break;
+        case $strings['Ver']: 
+            
+                $actividad = new actividad( $_REQUEST['ACTIVIDAD_NOMBRE'], '', '','','','','',null,'','');
+                $valores = $actividad->RellenaDatos();
+                if (!tienePermisos('Actividad_Delete')) {
+                    new Mensaje('No tienes los permisos necesarios', 'ACTIVIDAD_Controller.php');
+                } else {
+                    new ACTIVIDAD_show_current($valores, 'ACTIVIDAD_Controller.php');
+                }
+            
+            break;
 		case $strings['Modificar']: //Modificación de actividades
 
 			if (!isset($_REQUEST['ACTIVIDAD_ID'])) {
@@ -167,7 +181,7 @@ if (!isset($_REQUEST['accion'])){
 			break;
 		case $strings['Consultar']: //Consulta de actividades
 			if (!isset($_REQUEST['ACTIVIDAD_NOMBRE'])) {
-				new Actividad_Show();
+				new ACTIVIDAD_Show();
 			} else {
 				$actividad = get_data_form();
 				$datos = $actividad->select_actividad();

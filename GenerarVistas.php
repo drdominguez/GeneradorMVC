@@ -29,9 +29,11 @@ foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
     crearADD($tabla);
     crearSHOWALL($tabla);
     crearDELETE($tabla);
+    crearSHOWCURRENT($tabla);
+    crearSEARCH($tabla);
     /*crearEDIT($tabla);
-  crearSEARCH($tabla);
-    crearSHOWCURRENT($tabla);*/
+     
+    */
 }
 echo "Vistas creadas";
 
@@ -227,6 +229,10 @@ function crearSHOWALL($tabla){
             <a href=\''. strtoupper($tabla) .'_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Borrar\']; ?>\'><?php echo $strings[\'Borrar\'] ?></a>
         </td>
 
+        <td>
+            <a href=\''. strtoupper($tabla) .'_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Ver\']; ?>\'><?php echo $strings[\'Ver\'] ?></a>
+        </td>
+
         <?php
 
             echo "<tr>";
@@ -404,6 +410,141 @@ class '. strtoupper($tabla) . '_Edit{
 fwrite($file,$str);
 }
 
+function crearSHOWCURRENT($tabla){
+
+    echo "Creando vista SHOW CURRENT " . $tabla . "...
+";
+    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_CURRENT_Vista.php","w+");
+    $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
+    $str='<?php
+class '. strtoupper($tabla) . '_show_current{
+   
+    private $valores;
+    function __construct($valores){
+        $this->valores=$valores;
+        $this->render();
+    }
+    function render(){
+        
+                
+                include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                   $lista = array(';
+    $i=0;
+    foreach($atributos as $valor){
+        if($i==0){
+            $str .= '\'' . $valor->name.'\'';
+        }else{
+            $str .= ',\'' . $valor->name. '\'';
+        }
+        $i++;
+    }
+    $str .= ');
+                ?>
+                 <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" />
+ <script type="text/javascript" src="../js/<?php  echo $_SESSION[\'IDIOMA\'] ?>_validate.js"></script></head>
+            <p>
+            <h2>
+                <?php
+                include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+                  ?>
+            </h2>
+            </p>
+            <p>
+            <h1>
+            <span class="form-title">
+                <?php echo $strings[\'Consultar ' . strtoupper($tabla) . '\'] ?><br>
+            </h1>
+            <h3>
+
+                <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                    <ul class="form-style-1">
+                    <?php
+                    createForm($lista,$DefForm,$strings,$this->valores,false,true);
+                    ?>
+                </form>
+                <?php
+                    echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
+            </h3>
+            </p>
+
+        </div>
+
+
+        <?php
+    } //fin metodo render
+}
+?>';
+
+    fwrite($file,$str);
+}
+
+function crearSEARCH($tabla){
+    echo "Creando vista SEARCH " . $tabla . "...
+";
+    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SEARCH_Vista.php","w+");
+    $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
+    $str='<?php
+
+class '. strtoupper($tabla) . '_Show{
+
+function __construct(){ 
+    $this->render();
+}
+
+function render(){
+?>
+
+    <head><link rel="stylesheet" href="../Styles/styles.css" type="text/css" media="screen" /></head>
+    <p>
+
+
+<?php
+    include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
+  include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+$lista = array(';
+    $i=0;
+    foreach($atributos as $valor){
+        if($i==0){
+            $str .= '\'' . $valor->name.'\'';
+        }else{
+            $str .= ',\'' . $valor->name. '\'';
+        }
+        $i++;
+    }
+    $str .= ');
+?>
+        <h1><span class="form-title">
+            <?php echo $strings[\'Consultar ' . strtoupper($tabla) . '\']; ?><br>
+        </h1>
+    </p>
+    <p>
+    <h3>
+
+    <br><br>
+    <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+        <ul class="form-style-1">
+        <?php
+        createForm($lista,$DefForm,$strings,$values=\'\',false,false);
+?>
+    <input type=\'submit\' name=\'accion\' value=\'<?php echo $strings[\'Consultar\']; ?>\'>
+    <?php
+            echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                
+?>
+    </form>
+    <br>
+
+
+    </h3>
+    </p>
+
+    </div>
+
+<?php
+}
+
+}';
+fwrite($file,$str);
+}
 
 
 function crearArrayFormulario($tabla, $atributos){
