@@ -38,6 +38,7 @@ foreach($arrayTablas as $tabla){//Recorremos el array con las vistas
 echo "Vistas creadas";
 
 function crearADD($tabla){
+
     echo "Creando vista ADD " . $tabla . "...\n";
     $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
@@ -604,16 +605,19 @@ function get_data_form(){
 if (!isset($_REQUEST[\'accion\'])){
     $_REQUEST[\'accion\'] = \'\';
 }
-    
+    ';
+    $clave=obtenerClave($tabla);
+
+    $str.='
     Switch ($_REQUEST[\'accion\']) {
         case $strings[\'Continuar\']:
         case $strings[\'Insertar\']: 
-            if (!isset($_REQUEST[\'ACTIVIDAD_NOMBRE\'])) {
+            if (!isset($_REQUEST[\''. $clave .'\'])) {
 
-                    if (!tienePermisos(\'Actividad_Add\')) {
-                        new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
+                    if (!tienePermisos(\''. $tabla .'_Add\')) {
+                        new Mensaje(\'No tienes los permisos necesarios\', \''. $tabla .'_Controller.php\');
                     } else {
-                        new ACTIVIDAD_ADD();
+                        new '. $tabla .'_ADD();
                     }
 
             } else {
@@ -847,7 +851,7 @@ function listarAtributos($tabla){
 
 function obtenerClave($tabla){
      $mysqli2 = conectarBD();
-    $sql = 'SHOW KEYS FROM ' .$tabla .' WHERE Key_name = \'PRIMARY\'';
+   $sql = "SHOW KEYS FROM " . $tabla . " WHERE Key_name = 'PRIMARY'";
 
     if (!($resultado = $mysqli2->query($sql))) {
         return 'Error en la consulta sobre la base de datos';
