@@ -1,5 +1,7 @@
 <?php
-    echo "Iniciando creación de vistas...";//Mostramos mensaje para saber cuando empieza
+    echo "Iniciando creación de vistas...";//Mostramos mensaje para saber cuando empieza ?>
+<br>
+<?php
 function conectarBD(){//Creamos una funcion para conectarnos a la BD
 
     $bd = new mysqli("localhost", "iu2016", "iu2016", "IU2016");
