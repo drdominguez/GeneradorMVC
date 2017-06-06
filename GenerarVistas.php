@@ -42,7 +42,7 @@ echo "Vistas creadas";
 function crearADD($tabla){
 
     echo "Creando vista ADD " . $tabla . "...\n";
-    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
    // exit;
     $str='<?php
@@ -123,7 +123,7 @@ function crearADD($tabla){
 function crearSHOWALL($tabla){
  echo "Creando vista SHOWALL " . $tabla . "...
  ";
- $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
      class '. strtoupper($tabla) . '_DEFAULT { 
@@ -273,7 +273,7 @@ function crearDELETE($tabla){
 
 echo "Creando vista DELETE " . $tabla . "...
 ";
- $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
 class '. strtoupper($tabla) . '_delete{
@@ -342,7 +342,7 @@ class '. strtoupper($tabla) . '_delete{
 function crearEDIT($tabla){
 
 echo "Creando vista EDIT " . $tabla . "...";
- $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
 $str='<?php
 class '. strtoupper($tabla) . '_Edit{
 //VISTA PARA MODIFICAR 
@@ -417,7 +417,7 @@ function crearSHOWCURRENT($tabla){
 
     echo "Creando vista SHOW CURRENT " . $tabla . "...
 ";
-    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_CURRENT_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_CURRENT_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     $str='<?php
 class '. strtoupper($tabla) . '_show_current{
@@ -484,7 +484,7 @@ class '. strtoupper($tabla) . '_show_current{
 function crearSEARCH($tabla){
     echo "Creando vista SEARCH " . $tabla . "...
 ";
-    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Views/" . strtoupper($tabla) . "_SEARCH_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SEARCH_Vista.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     $str='<?php
 
@@ -554,7 +554,7 @@ fwrite($file,$str);
 function crearArrayFormulario($tabla, $atributos){
     echo "Creando formulario ". $tabla . "\n";
 
-    $file = fopen("/var/www/html/GeneradorPag/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
+    $file = fopen("/var/www/html/GeneradorMVC/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
         $str = '
         <?php
         

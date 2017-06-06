@@ -1,8 +1,8 @@
 <?php
-echo "Iniciando creador de controlador " . $tabla . "..."; ?>
-<br>
 
-<?php
+
+
+
 
 function conectarBD(){//Creamos una funcion para conectarnos a la BD
 
@@ -27,11 +27,52 @@ function listarTablas() //Creamos una funcion para que nos devuelva todas las ta
         return $tables;
     }
 }
+$arrayTablas = listarTablas();//Llamamos a la funcion listarTablas() para que nos devuelva todas las tablas. Le llamamos $arrayTablas
+foreach($arrayTablas as $tabla){
+
+    crearControlador($tabla);
+
+}
+
+function listarAtributos($tabla){
+    $mysqli2 = conectarBD();
+    $sql = 'SELECT * FROM ' . $tabla . ';';
+
+    if (!($resultado = $mysqli2->query($sql))) {
+        return 'Error en la consulta sobre la base de datos';
+    } else {
+        $finfo = mysqli_fetch_fields($resultado);
+
+
+        return $finfo;
+    }
+
+}
+
+function obtenerClave($tabla){
+     $mysqli2 = conectarBD();
+    $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.key_column_usage WHERE TABLE_NAME='". $tabla ."' AND CONSTRAINT_NAME = 'PRIMARY' ";
+     
+    if (!($resultado = $mysqli2->query($sql))) {
+        return 'Error en la consulta sobre la base de datos';
+    } else {
+        $finfo = mysqli_fetch_assoc($resultado);
+        
+        
+        return $finfo;
+    }
+
+}
+
 
 function crearControlador($tabla) {
 
+echo "Iniciando creador de controlador " . $tabla . "..."; ?>
+<br>
+
+<?php
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-    $file=fopen("/var/www/html/GeneradorPag/IUjulio/Controllers/" . strtoupper($tabla) . "_Controller.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Controllers/" . strtoupper($tabla) . "_Controller.php","w+");
     $str='<?php
 
 include \'../Models/' . strtoupper($tabla) . '_Model.php\';
@@ -59,10 +100,10 @@ function get_data_form(){
 ';
 
     foreach ($atributos as $valor) {
-        $str.= 'if(isset($_REQUEST[\'' . $valor . '\'])){
-                $' . $valor . ' = $_REQUEST[\'' . $valor . '\'];
+        $str.= 'if(isset($_REQUEST[\'' . $valor->name . '\'])){
+                $' . $valor->name . ' = $_REQUEST[\'' . $valor->name . '\'];
          }else{
-                $' . $valor . '=null;
+                $' . $valor->name . '=null;
          }';
 
     }
@@ -73,9 +114,9 @@ function get_data_form(){
     $i=0;
     foreach ($atributos as $valor) {
         if($i==0) {
-            $str.= '$' . $valor .'';
+            $str.= '$' . $valor->name .'';
         }else{
-            $str.= ',$' . $valor .'';
+            $str.= ',$' . $valor->name .'';
         }
     }
     $str.=');
@@ -88,12 +129,14 @@ if (!isset($_REQUEST[\'accion\'])){
 }
     ';
     $clave=obtenerClave($tabla);
+    
+    
 
     $str.='
     Switch ($_REQUEST[\'accion\']) {
         case $strings[\'Continuar\']:
         case $strings[\'Insertar\']: 
-            if (!isset($_REQUEST[\''. $clave .'\'])) {
+            if (!isset($_REQUEST[\''. $clave['COLUMN_NAME']  .'\'])) {
 
                     if (!tienePermisos(\''. $tabla .'_Add\')) {
                         new Mensaje(\'No tienes los permisos necesarios\', \''. $tabla .'_Controller.php\');
@@ -216,7 +259,9 @@ if (!isset($_REQUEST[\'accion\'])){
 ?>
 ';
 
-    fwrite($file,$str);
+    fwrite($file,$str);echo "Controlador creado!! "; ?>
+    <br>
+    <?php
 }
 
 function crearModelo($tabla){
@@ -228,7 +273,7 @@ function crearModelo($tabla){
 
 
         $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-        $file=fopen("/var/www/html/GeneradorPag/IUjulio/Models/" . strtoupper($tabla) . "_Model.php","w+");
+        $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Models/" . strtoupper($tabla) . "_Model.php","w+");
 
         $str='<?php
 
@@ -237,7 +282,7 @@ class ' . $tabla .'
 {';
 
         foreach ($atributos as $valor) {
-            $str.= 'var $'. $valor .';';
+            $str.= 'var $'. $valor->name .';';
         }
 
         $str.='function __construct($ACTIVIDAD_NOMBRE, $ACTIVIDAD_PRECIO, $ACTIVIDAD_DESCRIPCION, $CATEGORIA_ID,$ACTIVO, $ACTIVIDAD_LUGAR, $ACTIVIDAD_PROFESORES, $ACTIVIDAD_BLOQUE, $ACTIVIDAD_HORARIO, $ACTIVIDAD_DIA)
@@ -522,11 +567,10 @@ class ' . $tabla .'
         }
             return $toret;
     }
+}';
+    
 }
-';
-    }
 
-}
 
 
 ?>
