@@ -27,6 +27,11 @@ function listarTablas() //Creamos una funcion para que nos devuelva todas las ta
 function crearModelo($tabla){
 
 
+    <br>echo "prueba";<br>
+    echo "prueba2"; <br>
+    echo "prueba3";
+    <br> "prueba4";
+
 
 }
 
