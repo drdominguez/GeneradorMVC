@@ -117,7 +117,7 @@ function get_data_form(){
     foreach ($atributos as $valor) {
         if($i==0) {
             $str.= '$' . $valor->name .'';
-        }else{
+    7    }else{
             $str.= ',$' . $valor->name .'';
         }
     }
@@ -128,7 +128,7 @@ function get_data_form(){
 
 if (!isset($_REQUEST[\'accion\'])){
     $_REQUEST[\'accion\'] = \'\';
-}
+}7
     ';
     $clave=obtenerClave($tabla);
     
@@ -270,58 +270,55 @@ class ' . $tabla .'
     function insert()
     {
         $this->ConectarBD();
-        $sql = "SELECT * FROM '. $table .' WHERE ' . $clave .' = \'".$this->' . $clave .'"\'";
-        $result = $this->mysqli->query($sql);
-        if($result->num_rows == 1
+       if (($this->CodigoA <> '')){
+        
+        $sql = "SELECT * FROM ' . $tabla .' WHERE (CodigoA = $this->CodigoA)";
 
-                        return \'Ya existe en la base de datos\';
-            }else{
-                    if ($result->num_rows == 0){
-
-
-
-
-
-
-
-                        //VOY POR AQUI EN EL MODELO 
-
-
-
-
-
-
-
-
-                        $sql = "INSERT INTO ACTIVIDAD (ACTIVIDAD_NOMBRE, ACTIVIDAD_PRECIO, ACTIVIDAD_DESCRIPCION, CATEGORIA_ID,ACTIVO) VALUES (\'". $this->ACTIVIDAD_NOMBRE ."\',\'". $this->ACTIVIDAD_PRECIO ."\',\'". $this->ACTIVIDAD_DESCRIPCION ."\',\'". $this->CATEGORIA_ID ."\',\'". $this->ACTIVO ."\')";
-
-                        $this->mysqli->query($sql);
-                        $sql = "SELECT ACTIVIDAD_ID FROM ACTIVIDAD WHERE ACTIVIDAD_NOMBRE = \'".$this->ACTIVIDAD_NOMBRE."\'";
-                        $result= $this->mysqli->query($sql);
-                        $ID=$result->fetch_array();
-
-                        //crearActividad($this->ACTIVIDAD_NOMBRE);
-                        for($i=0;$i<count($this->ACTIVIDAD_PROFESORES);$i++){
-                            $sql="INSERT INTO EMPLEADOS_IMPARTE_ACTIVIDAD (ACTIVIDAD_ID, EMP_USER) VALUES (\'".$ID[\'ACTIVIDAD_ID\']."\',\'".$this->ACTIVIDAD_PROFESORES[$i]."\')";
-
-                            $this->mysqli->query($sql);
-                        }
-
-
-                            $sql="INSERT INTO ACTIVIDAD_ALBERGA_LUGAR (ACTIVIDAD_ID, LUGAR_ID) VALUES (\'".$ID[\'ACTIVIDAD_ID\']."\',\'".$this->ACTIVIDAD_LUGAR."\')";
-
-                            $this->mysqli->query($sql);
-
-                        for($i=0;$i<count($this->ACTIVIDAD_BLOQUE);$i++) {
-                            $sql = "INSERT INTO CALENDARIO (CALENDARIO_ACTIVIDAD,CALENDARIO_BLOQUE) VALUES (\'" . $ID[\'ACTIVIDAD_ID\'] . "\',\'" . $this->ACTIVIDAD_BLOQUE[$i] . "\')";
-
-                            $this->mysqli->query($sql);
-                        }return \'Añadida con exito\';
-                    }
+        if (!$result = $this->mysqli->query($sql)){
+            return \'No se ha podido conectar con la base de datos\'; // error en la consulta (no se ha podido conectar con la bd
+        }
+        else {
+            if ($result->num_rows == 0){
+                
+                $sql = "INSERT INTO ' . $tabla .' (
+                    CodigoA,
+                    AutoresA,
+                    TituloA,
+                    TituloR,
+                    ISSN,
+                    VolumenR,
+                    PagIniA,
+                    PagFinA,
+                    FechaPublicacionR,
+                    EstadoA) 
+                        VALUES (
+                    $this->CodigoA,
+                        \'$this->AutoresA\',
+                        \'$this->TituloA\',
+                        \'$this->TituloR\',
+                        \'$this->ISSN\',
+                        \'$this->VolumenR\',
+                        \'$this->PagIniA\',
+                        \'$this->PagFinA\',
+                        \'$this->FechaPublicacionR\',
+                        \'$this->EstadoA\')";
+                
+                if (!$this->mysqli->query($sql)) {
+                    return \'Error en la inserción\';
+                }
+                else{
+                    return \'Inserción realizada con éxito\'; //operacion de insertado correcta
+                }
+                
             }
+            else
+                return \'Ya existe en la base de datos\'; // ya existe
+        }
     }
-
-
+    else{
+        return \'Introduzca un valor\'; // introduzca un valor para el usuario
+    }
+}
 
 
 
