@@ -29,7 +29,7 @@ function listarTablas() //Creamos una funcion para que nos devuelva todas las ta
 }
 $arrayTablas = listarTablas();//Llamamos a la funcion listarTablas() para que nos devuelva todas las tablas. Le llamamos $arrayTablas
 foreach($arrayTablas as $tabla){
-
+    crearModelo($tabla);
     crearControlador($tabla);
 
 }
@@ -130,6 +130,8 @@ if (!isset($_REQUEST[\'accion\'])){
     $_REQUEST[\'accion\'] = \'\';
 }7
     ';
+
+
     $clave=obtenerClave($tabla);
     
     
@@ -143,30 +145,54 @@ if (!isset($_REQUEST[\'accion\'])){
                 else{
                     $' . $tabla .' = get_data_form();
                     $respuesta = $' . $tabla .'->ADD();
-                    new MESSAGE($respuesta, \'../Controller/$' . $tabla .'_Controller.php\');
+                    new Mensaje($respuesta, \'../Controller/$' . $tabla .'_Controller.php\');
                 }
                 break;      
             break;
         case $strings[\'Borrar\']: //Borrado de actividades
            if (!$_POST){
-                    $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],'','','','','','','','','');
+                    $' . $tabla .' = new ' . $tabla .'_Model(  $_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
+                    for(int i=0;i<$atributos.length;i++){
+                        if(i==0){
+                         $str.=',\'\'';
+                        }else{
+                         $str.='\'\'';
+                        }
+                    }
+                  $str.=');
                     $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
                     new ' . $tabla .'_DELETE($valores);
                 }
                 else{
                     $' . $tabla .' = get_data_form();
                     $respuesta = $' . $tabla .'->DELETE();
-                    new MESSAGE($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
+                    new Mensaje($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
                 }
                 break;
         case $strings[\'Ver\']: 
-                $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],\'\','','','','','','','','');
+                $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
+                    for(int i=0;i<$atributos.length;i++){
+                        if(i==0){
+                         $str.=',\'\'';
+                        }else{
+                         $str.='\'\'';
+                        }
+                    }
+                  $str.=');
                 $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
                 new ' . $tabla .'_SHOWCURRENT($valores);
                 break;
         case $strings[\'Modificar\']: //Modificación de actividades
 if (!$_POST){
-                    $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],\'\',\'\',\'\',\'\','','','','','');
+                    $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
+                    for(int i=0;i<$atributos.length;i++){
+                        if(i==0){
+                         $str.=',\'\'';
+                        }else{
+                         $str.='\'\'';
+                        }
+                    }
+                  $str.=');
                     $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
                     new ' . $tabla .'_EDIT($valores);
                 }
@@ -175,7 +201,7 @@ if (!$_POST){
                     $' . $tabla .' = get_data_form();
 
                     $respuesta = $' . $tabla .'->EDIT();
-                    new MESSAGE($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
+                    new Mensaje($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
                 }
                 
                 break;
@@ -186,21 +212,25 @@ if (!$_POST){
                 else{
                     $' . $tabla .' = get_data_form();
                     $datos = $' . $tabla .'->SEARCH();
-
-                    $lista = array('CodigoA','AutoresA','TituloA','TituloR','ISSN','VolumenR','PagIniA','PagFinA','FechaPublicacionR','EstadoA');
-
                     new ' . $tabla .'_SHOWALL($lista, $datos, \'../index.php\');
                 }
                 break;
         default:
            if (!$_POST){
-                    $' . $tabla .' = new ' . $tabla .'_Model(\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\');
+                    $' . $tabla .' = new ' . $tabla .'_Model(\'\'';
+                    for(int i=0;i<$atributos.length;i++){
+                        if(i==0){
+                         $str.=',\'\'';
+                        }else{
+                         $str.='\'\'';
+                        }
+                    }
+                  $str.=');
                 }
                 else{
                     $' . $tabla .' = get_data_form();
                 }
                 $datos = $' . $tabla .'->SEARCH();
-                $lista = array('CodigoA','AutoresA','TituloA','TituloR','ISSN','VolumenR','PagIniA','PagFinA','FechaPublicacionR','EstadoA');
                 new ' . $tabla .'_SHOWALL($lista, $datos);
 
             }
@@ -225,12 +255,12 @@ function crearModelo($tabla){
 
 
         $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-        $file=fopen("/var/www/html/GeneradorPag/IUjulio/Models/" . strtoupper($tabla) . "_Model.php","w+");
+        $file=fopen("/var/www/html/GeneradorPag/IUjulio/Models/" . $tabla . "_Model.php","w+");
 
         $str='<?php
 
 
-class ' . $tabla .'
+class ' . $tabla .'_Model
 {';
 
         foreach ($atributos as $valor) {
@@ -267,12 +297,12 @@ class ' . $tabla .'
     }
 
     //Anadir una actividad
-    function insert()
+    function ADD()
     {
         $this->ConectarBD();
-       if (($this->CodigoA <> '')){
+       if (($this->' . $clave['COLUMN_NAME'] .' <> '')){
         
-        $sql = "SELECT * FROM ' . $tabla .' WHERE (CodigoA = $this->CodigoA)";
+        $sql = "SELECT * FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
 
         if (!$result = $this->mysqli->query($sql)){
             return \'No se ha podido conectar con la base de datos\'; // error en la consulta (no se ha podido conectar con la bd
@@ -280,28 +310,28 @@ class ' . $tabla .'
         else {
             if ($result->num_rows == 0){
                 
-                $sql = "INSERT INTO ' . $tabla .' (
-                    CodigoA,
-                    AutoresA,
-                    TituloA,
-                    TituloR,
-                    ISSN,
-                    VolumenR,
-                    PagIniA,
-                    PagFinA,
-                    FechaPublicacionR,
-                    EstadoA) 
-                        VALUES (
-                    $this->CodigoA,
-                        \'$this->AutoresA\',
-                        \'$this->TituloA\',
-                        \'$this->TituloR\',
-                        \'$this->ISSN\',
-                        \'$this->VolumenR\',
-                        \'$this->PagIniA\',
-                        \'$this->PagFinA\',
-                        \'$this->FechaPublicacionR\',
-                        \'$this->EstadoA\')";
+                $sql = "INSERT INTO ' . $tabla .' (';
+                $i=0;
+                 foreach ($atributos as $valor) {
+                    if($i==0){
+                        $str.= $valor->name;
+                    }else{
+                        $str.= ',' . $valor->name;
+                    }
+                    $i++;
+                 }
+                    $str.=') 
+                        VALUES (';
+                        $i=0;
+                 foreach ($atributos as $valor) {
+                    if($i==0){
+                        $str.= '$this->\'' . $valor->name . '\'';
+                    }else{
+                        $str.= ',$this->\'' . $valor->name . '\'';
+                    }
+                    $i++;
+                 }
+                        $str.=')";
                 
                 if (!$this->mysqli->query($sql)) {
                     return \'Error en la inserción\';
@@ -320,206 +350,115 @@ class ' . $tabla .'
     }
 }
 
+//funcion de destrucción del objeto: se ejecuta automaticamente
+//al finalizar el script
+function __destruct()
+{
 
+}
 
-    //Funcion de destruccion del objeto: se ejecuta automaticamente
-    function __destruct()
-    {
-
+   //funcion Consultar: hace una búsqueda en la tabla con
+//los datos proporcionados. Si van vacios devuelve todos
+function SEARCH()
+{
+    $sql = "select ';
+                $i=0;
+                foreach ($atributos as $valor) {
+                    if($i==0){
+                        $str.= $valor->name;
+                    }else{
+                        $str.= ',' . $valor->name;
+                    }
+                    $i++;
+                 }
+                    $str.='
+                from ' . $tabla .' 
+                where 
+                    (';
+                        $i=0;
+                 foreach ($atributos as $valor) {
+                    if($i==0){
+                        $str.= '(' . $valor->name . '\' LIKE \'%$this->' . $valor->name . '%\') &&';
+                    }else{
+                        $str.= '&& (' . $valor->name . '\' LIKE \'%$this->' . $valor->name . '%\') &&';
+                    }
+                    $i++;
+                 }
+                        $str.=')";
+    if (!($resultado = $this->mysqli->query($sql))){
+        return \'Error en la consulta sobre la base de datos\';
     }
-
-    //Consultar una actividad
-    function select_actividad()
-    {
-
-        $this->ConectarBD();
-        $sql = "SELECT * FROM ACTIVIDAD WHERE ACTIVIDAD_NOMBRE = \'".$this->ACTIVIDAD_NOMBRE."\' OR CATEGORIA_ID = \'". $this->CATEGORIA_ID . "\'";
-        $resultado=$this->mysqli->query($sql);
-
-        if (!($resultado = $this->mysqli->query($sql))){
-            return \'Error en la consulta sobre la base de datos\';
-        }
-        else{
-
-            $toret=array();
-            $i=0;
-
-            while ($fila= $resultado->fetch_array()) {
-
-
-                $toret[$i]=$fila;
-                $i++;
-
-
-            }
-
-
-            return $toret;
-
-        }
-
-
-    }
-
-
-    //Realiza el borrado lógico de un usuario.
-    function delete_actividad(){
-
-        $this->ConectarBD();
-
-        $sql = "UPDATE ACTIVIDAD SET ACTIVO=\'1\' WHERE ACTIVIDAD_NOMBRE=\'".$this->ACTIVIDAD_NOMBRE."\';";
-        if($this->mysqli->query($sql) === TRUE) {
-            $sql1="SELECT ACTIVIDAD_ID FROM ACTIVIDAD WHERE ACTIVIDAD_NOMBRE = \'" . $this->ACTIVIDAD_NOMBRE."\';";
-            $resultado = $this->mysqli->query($sql1)->fetch_array();
-            $sql = "DELETE FROM CALENDARIO WHERE CALENDARIO_ACTIVIDAD   = \'".$resultado[\'ACTIVIDAD_ID\']."\'";
-            $this->mysqli->query($sql);
-            return "La actividad ha sido borrada correctamente";
-        }else
-            return "La actividad no existe";
-    }
-
-
-    //Devuelve la información correspondiente a una actividad
-    function RellenaDatos()
-    {
-        $this->ConectarBD();
-        $sql = "select * from ACTIVIDAD where ACTIVIDAD_NOMBRE = \'".$this->ACTIVIDAD_NOMBRE."\'";
-        if (!($resultado = $this->mysqli->query($sql))){
-            return \'Error en la consulta sobre la base de datos\';
-        }
-        else{
-            $result = $resultado->fetch_array();
-
-
-            return $result;
-        }
-    }
-
-    //Devuelve la información correspondiente a una actividad
-    function RellenaDatosCalendarioActividad()
-    {
-        $this->ConectarBD();
-        $sql1="SELECT ACTIVIDAD_ID FROM ACTIVIDAD WHERE ACTIVIDAD_NOMBRE = \'" . $this->ACTIVIDAD_NOMBRE."\';";
-        $resultado = $this->mysqli->query($sql1)->fetch_array();
-        $sql = "select * from CALENDARIO where CALENDARIO_ACTIVIDAD = \'".$resultado[\'ACTIVIDAD_ID\']."\'";
-        if (!($resultado2 = $this->mysqli->query($sql))){
-            return \'Error en la consulta sobre la base de datos\';
-        }
-        else{
-            $result = $resultado2->fetch_array();
-
-
-            return $result;
-        }
-    }
-
-
-    //Modificar la actividad
-    function update_actividad($ACTIVIDAD_ID)
-    {
-        $this->ConectarBD();
-        $sql = "select * from ACTIVIDAD where ACTIVIDAD_ID = \'".$ACTIVIDAD_ID."\'";
-        $result = $this->mysqli->query($sql);
-        if ($result->num_rows == 1)
-        {
-            $sql ="SELECT ACTIVIDAD_PRECIO FROM ACTIVIDAD WHERE ACTIVIDAD_ID=".$ACTIVIDAD_ID;
-            $result = $this->mysqli->query($sql)->fetch_array();
-            if($this->ACTIVO==\'Activo\'){
-                $this->ACTIVO=0;
-            }else{
-                $this->ACTIVO=1;
-            }
-                $sql = "UPDATE ACTIVIDAD SET ACTIVIDAD_NOMBRE =\'".$this->ACTIVIDAD_NOMBRE."\', ACTIVIDAD_PRECIO =\'".$this->ACTIVIDAD_PRECIO."\',ACTIVIDAD_DESCRIPCION =\'".$this->ACTIVIDAD_DESCRIPCION."\',CATEGORIA_ID =\'".$this->CATEGORIA_ID."\',ACTIVO =\'".$this->ACTIVO."\' WHERE ACTIVIDAD_ID =\'".$ACTIVIDAD_ID."\'";
-            //echo $sql;
-            if (!($resultado = $this->mysqli->query($sql))){
-                return "Error en la consulta sobre la base de datos";
-            }
-            else{
-                return "La actividad se ha modificado con exito";
-            }
-        }
-        else
-            return "La actividad no existe";
-    }
-
-    //Listar todas las actividads
-    function ConsultarTodo()
-    {
-        $this->ConectarBD();
-        $sql = "SELECT ACTIVIDAD.ACTIVIDAD_ID,ACTIVIDAD.ACTIVIDAD_NOMBRE,ACTIVIDAD.ACTIVIDAD_PRECIO,ACTIVIDAD.ACTIVIDAD_DESCRIPCION,ACTIVIDAD.CATEGORIA_ID FROM LUGAR ,ACTIVIDAD_ALBERGA_LUGAR ,ACTIVIDAD, CATEGORIA WHERE LUGAR.LUGAR_ID =ACTIVIDAD_ALBERGA_LUGAR.LUGAR_ID AND ACTIVIDAD_ALBERGA_LUGAR.ACTIVIDAD_ID = ACTIVIDAD.ACTIVIDAD_ID AND ACTIVIDAD.CATEGORIA_ID = CATEGORIA.CATEGORIA_ID AND ACTIVIDAD.ACTIVO = \'0\'";
-
-        if (!($resultado = $this->mysqli->query($sql))){
-            return \'Error en la consulta sobre la base de datos\';
-        }
-        else{
-
-            $toret=array();
-            $i=0;
-
-            while ($fila= $resultado->fetch_array()) {
-
-
-                $toret[$i]=$fila;
-                $i++;
-
-            }
-
-            return $toret;
-
-        }
-    }
-
-
-
-    //Listar todas las actividades inactivas
-    function ConsultarBorradas()
-    {
-        $this->ConectarBD();
-        $sql = "SELECT ACTIVIDAD.ACTIVIDAD_NOMBRE,ACTIVIDAD.ACTIVIDAD_PRECIO,ACTIVIDAD.ACTIVIDAD_DESCRIPCION,CATEGORIA.CATEGORIA_NOMBRE,LUGAR.LUGAR_NOMBRE FROM LUGAR ,ACTIVIDAD_ALBERGA_LUGAR ,ACTIVIDAD, CATEGORIA WHERE LUGAR.LUGAR_ID =ACTIVIDAD_ALBERGA_LUGAR.LUGAR_ID AND ACTIVIDAD_ALBERGA_LUGAR.ACTIVIDAD_ID = ACTIVIDAD.ACTIVIDAD_ID AND ACTIVIDAD.CATEGORIA_ID = CATEGORIA.CATEGORIA_ID AND ACTIVIDAD.ACTIVO = 1";
-        if (!($resultado = $this->mysqli->query($sql))){
-            return \'Error en la consulta sobre la base de datos\';
-        }
-        else{
-
-            $toret=array();
-            $i=0;
-
-            while ($fila= $resultado->fetch_array()) {
-
-
-                $toret[$i]=$fila;
-                $i++;
-
-
-            }
-
-
-            return $toret;
-
-        }
-    }
-
-        function ConsultarClientesActividad(){
-        $this->ConectarBD();
-        $sql = "SELECT CLIENTE_ID, CLIENTE_NOMBRE, CLIENTE_APELLIDOS, CLIENTE_CORREO FROM CLIENTE WHERE CLIENTE_ID IN (SELECT CLIENTE_ID FROM CLIENTE_INSCRIPCION_ACTIVIDAD WHERE ACTIVIDAD_ID = \'" . $this->ACTIVIDAD_ID . "\')";
-        if (!($resultado = $this->mysqli->query($sql))) {
-            return \'Error en la consulta sobre la base de datos\';
-        } else {
-
-            $toret = array();
-            $i = 0;
-
-            while ($fila = $resultado->fetch_array()) {
-
-
-                $toret[$i] = $fila;
-                $i++;
-            }
-
-        }
-            return $toret;
+    else{
+        return $resultado;
     }
 }
+
+
+function DELETE()
+{
+    $sql = "SELECT * FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
+    $result = $this->mysqli->query($sql);
+    if ($result->num_rows == 1)
+    {
+        $sql = "DELETE FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
+        $this->mysqli->query($sql);
+        return "Borrado correctamente";
+    }
+    else
+        return "No existe en la base de datos";
+}
+
+function RellenaDatos()
+{
+    $sql = "SELECT * FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
+    if (!($resultado = $this->mysqli->query($sql))){
+        return \'No existe en la base de datos\'; // 
+    }
+    else{
+        $result = $resultado->fetch_array();
+        return $result;
+    }
+}
+
+function EDIT()
+{
+
+    $sql = "SELECT * FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
+    
+
+    $result = $this->mysqli->query($sql);
+    
+    if ($result->num_rows == 1)
+    {
+        $sql = "UPDATE ' . $tabla .' SET ';
+                        $i=0;
+                 foreach ($atributos as $valor) {
+                    if($i==0){
+                        $str.=  $valor->name . ' = \'$this->' . $valor->name . '\'';
+                    }else{
+                        $str.=  ',' . $valor->name . ' = \'$this->' . $valor->name . '\'';
+                    }
+                    $i++;
+                 }
+                        $str.=' WHERE ( ' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .'
+                )";
+        
+        if (!($resultado = $this->mysqli->query($sql))){
+            return \'Error en la modificación\'; 
+        }
+        else{
+            return \'Modificado correctamente\';
+        }
+    }
+    else
+        return \'No existe en la base de datos\';
+}
+
+
+
+}//fin de clase
+
+?> 
 ';
     }
 
