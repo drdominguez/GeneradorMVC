@@ -71,9 +71,11 @@ echo "Iniciando creador de controlador " . $tabla . "..."; ?>
 <br>
 
 <?php
+
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Controllers/" . strtoupper($tabla) . "_Controller.php","w+");
-    $str='<?php
+    $str='<?php 
+    session_start(); //solicito trabajar con la session
 
 include \'../Models/' . strtoupper($tabla) . '_Model.php\';
 include \'../Locates/Strings_Castellano.php\';
@@ -110,7 +112,7 @@ function get_data_form(){
 
     $str.='$accion = $_REQUEST[\'accion\'];
 
-    $' . $tabla .' = new '. $tabla .'(';
+    $' . $tabla .' = new '. $tabla .'_Model(';
     $i=0;
     foreach ($atributos as $valor) {
         if($i==0) {
@@ -134,123 +136,72 @@ if (!isset($_REQUEST[\'accion\'])){
 
     $str.='
     Switch ($_REQUEST[\'accion\']) {
-        case $strings[\'Continuar\']:
         case $strings[\'Insertar\']: 
-            if (!isset($_REQUEST[\''. $clave['COLUMN_NAME']  .'\'])) {
-
-                    if (!tienePermisos(\''. $tabla .'_Add\')) {
-                        new Mensaje(\'No tienes los permisos necesarios\', \''. $tabla .'_Controller.php\');
-                    } else {
-                        new '. $tabla .'_ADD();
-                    }
-
-            } else {
-
-                if (!isset($_REQUEST[\'ACTIVIDAD_BLOQUE\'])) {
-                    $actividad = get_data_form();
-
-                    new Actividad_Add_Horas($actividad);
-                } else {
-                    $actividad = get_data_form();
-
-                    $respuesta = $actividad->insert_actividad();
-                    new Mensaje($respuesta, \'ACTIVIDAD_Controller.php\');
+                if (!$_POST){
+                    new ' . $tabla . '_ADD();
                 }
-
-            }
+                else{
+                    $' . $tabla .' = get_data_form();
+                    $respuesta = $' . $tabla .'->ADD();
+                    new MESSAGE($respuesta, \'../Controller/$' . $tabla .'_Controller.php\');
+                }
+                break;      
             break;
         case $strings[\'Borrar\']: //Borrado de actividades
-            if (!isset($_REQUEST[\'ACTIVIDAD_ID\'])) {
-                $actividad = new actividad( $_REQUEST[\'ACTIVIDAD_NOMBRE\'], \'\', \'\',\'\',\'\',\'\',\'\',null,\'\',\'\');
-                $valores = $actividad->RellenaDatos();
-                if (!tienePermisos(\'Actividad_Delete\')) {
-                    new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
-                } else {
-                    new Actividad_Delete($valores, \'ACTIVIDAD_Controller.php\');
+           if (!$_POST){
+                    $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],'','','','','','','','','');
+                    $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
+                    new ' . $tabla .'_DELETE($valores);
                 }
-            } else {
-
-
-                $actividad = get_data_form();
-                $respuesta = $actividad->delete_actividad();
-                new Mensaje($respuesta, \'ACTIVIDAD_Controller.php\');
-            }
-            break;
+                else{
+                    $' . $tabla .' = get_data_form();
+                    $respuesta = $' . $tabla .'->DELETE();
+                    new MESSAGE($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
+                }
+                break;
         case $strings[\'Ver\']: 
-            
-                $actividad = new actividad( $_REQUEST[\'ACTIVIDAD_NOMBRE\'], \'\', \'\',\'\',\'\',\'\',\'\',null,\'\',\'\');
-                $valores = $actividad->RellenaDatos();
-                if (!tienePermisos(\'Actividad_Delete\')) {
-                    new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
-                } else {
-                    new ACTIVIDAD_show_current($valores, \'ACTIVIDAD_Controller.php\');
-                }
-            
-            break;
+                $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],\'\','','','','','','','','');
+                $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
+                new ' . $tabla .'_SHOWCURRENT($valores);
+                break;
         case $strings[\'Modificar\']: //Modificación de actividades
-
-            if (!isset($_REQUEST[\'ACTIVIDAD_ID\'])) {
-
-                $actividad = new actividad( $_REQUEST[\'ACTIVIDAD_NOMBRE\'], \'\', \'\',\'\',\'\',\'\',\'\',null,\'\',\'\');
-                $valores = $actividad->RellenaDatos();
-                $valores2 = $actividad->RellenaDatosCalendarioActividad();
-                if (!tienePermisos(\'ACTIVIDAD_Edit\')) {
-                    new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
-                } else {
-                    new Actividad_Edit($valores, $valores2, \'ACTIVIDAD_Controller.php\');
+if (!$_POST){
+                    $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\'],\'\',\'\',\'\',\'\','','','','','');
+                    $valores = $' . $tabla .'->RellenaDatos($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']);
+                    new ' . $tabla .'_EDIT($valores);
                 }
-            } else {
+                else{
+                    
+                    $' . $tabla .' = get_data_form();
+
+                    $respuesta = $' . $tabla .'->EDIT();
+                    new MESSAGE($respuesta, \'../Controller/' . $tabla .'_Controller.php\');
+                }
                 
-
-                $actividad = get_data_form();
-
-                $respuesta = $actividad->update_actividad($_REQUEST[\'ACTIVIDAD_ID\']);
-                new Mensaje($respuesta, \'ACTIVIDAD_Controller.php\');
-
-            }
-            break;
-        case $strings[\'Consultar\']: //Consulta de actividades
-            if (!isset($_REQUEST[\'ACTIVIDAD_NOMBRE\'])) {
-                new ACTIVIDAD_Show();
-            } else {
-                $actividad = get_data_form();
-                $datos = $actividad->select_actividad();
-                if (!tienePermisos(\'ACTIVIDAD_Show\')) {
-                    new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
-                } else {
-
-                    new Actividad_default($datos, \'ACTIVIDAD_Controller.php\');
+                break;
+        case $strings[\'Buscar\']: //Consulta de actividades
+            if (!$_POST){
+                    new ' . $tabla .'_SEARCH();
                 }
-            }
-            break;
-        case $strings[\'CONSULTAR BORRADO\']: //Consulta de actividades ocultas
-            if (!isset($_REQUEST[\'ACTIVIDAD_NOMBRE\'])) {
-                $actividad = new actividad(\'\', \'\',\'\',\'\',\'\',\'\',\'\',null,\'\',\'\');
-            } else {
-                $actividad = get_data_form();
-            }
-            
-            $datos = $actividad->ConsultarBorradas();
-            
-            if (!tienePermisos(\'Actividad_default_borradas\')) {
-                new Mensaje(\'No tienes los permisos necesarios\', \'ACTIVIDAD_Controller.php\');
-            } else {
-                new Actividad_default_borradas($datos, \'ACTIVIDAD_Controller.php\');
-            }
-            break;
+                else{
+                    $' . $tabla .' = get_data_form();
+                    $datos = $' . $tabla .'->SEARCH();
+
+                    $lista = array('CodigoA','AutoresA','TituloA','TituloR','ISSN','VolumenR','PagIniA','PagFinA','FechaPublicacionR','EstadoA');
+
+                    new ' . $tabla .'_SHOWALL($lista, $datos, \'../index.php\');
+                }
+                break;
         default:
-            //La vista por defecto lista todas las actividades
-            if (!isset($_REQUEST[\'ACTIVIDAD_NOMBRE\'])) {
-                $actividad = new actividad(\'\', \'\',\'\',\'\',\'\',\'\',\'\',null,\'\',\'\');
-            } else {
-                $actividad = get_data_form();
-            }
-            $datos = $actividad->ConsultarTodo();
-            
-            if (!tienePermisos(\'ACTIVIDAD_DEFAULT\')) {
-                new Mensaje(\'No tienes los permisos necesarios\', \'../Views/DEFAULT_Vista.php\');
-            } else {
-                new ACTIVIDAD_DEFAULT($datos, \'../Views/DEFAULT_Vista.php\');
+           if (!$_POST){
+                    $' . $tabla .' = new ' . $tabla .'_Model(\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\',\'\');
+                }
+                else{
+                    $' . $tabla .' = get_data_form();
+                }
+                $datos = $' . $tabla .'->SEARCH();
+                $lista = array('CodigoA','AutoresA','TituloA','TituloR','ISSN','VolumenR','PagIniA','PagFinA','FechaPublicacionR','EstadoA');
+                new ' . $tabla .'_SHOWALL($lista, $datos);
 
             }
 
@@ -259,7 +210,8 @@ if (!isset($_REQUEST[\'accion\'])){
 ?>
 ';
 
-    fwrite($file,$str);echo "Controlador creado!! "; ?>
+    fwrite($file,$str);
+    echo "Controlador " . $tabla ." creado!! "; ?>
     <br>
     <?php
 }
@@ -273,7 +225,7 @@ function crearModelo($tabla){
 
 
         $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-        $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Models/" . strtoupper($tabla) . "_Model.php","w+");
+        $file=fopen("/var/www/html/GeneradorPag/IUjulio/Models/" . strtoupper($tabla) . "_Model.php","w+");
 
         $str='<?php
 
@@ -285,39 +237,25 @@ class ' . $tabla .'
             $str.= 'var $'. $valor->name .';';
         }
 
-        $str.='function __construct($ACTIVIDAD_NOMBRE, $ACTIVIDAD_PRECIO, $ACTIVIDAD_DESCRIPCION, $CATEGORIA_ID,$ACTIVO, $ACTIVIDAD_LUGAR, $ACTIVIDAD_PROFESORES, $ACTIVIDAD_BLOQUE, $ACTIVIDAD_HORARIO, $ACTIVIDAD_DIA)
-    {include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
-        $semana=array($strings[\'Domingo\'],$strings[\'Lunes\'],$strings[\'Martes\'],$strings[\'Miercoles\'],$strings[\'Jueves\'],$strings[\'Viernes\'], $strings[\'Sabado\']);
-
-
-    if (isset($ACTIVIDAD_BLOQUE)) {
-
-        $toret=array();
-        for($i=0;$i<count($ACTIVIDAD_BLOQUE);$i++) {
-        $horas = explode("-", $ACTIVIDAD_BLOQUE[$i]);
-
-            for($u=0;$u<count(consultarBloques($ACTIVIDAD_HORARIO, array_search($ACTIVIDAD_DIA, $semana), $horas[0], $horas[1]));$u++){
-                array_push($toret, consultarBloques($ACTIVIDAD_HORARIO, array_search($ACTIVIDAD_DIA, $semana), $horas[0], $horas[1])[$u]);
-            }
-
-    }
-        $this->ACTIVIDAD_BLOQUE=$toret;
-}
-        else {
-            $this->ACTIVIDAD_BLOQUE=$ACTIVIDAD_BLOQUE;
+        $str.='function __construct(';
+        $i=0;
+        foreach ($atributos as $valor) {
+            if($i==0){
+            $str.= '$'. $valor->name .';';
+        }else{
+            $str.= ',$'. $valor->name .';';
         }
-        $this->ACTIVIDAD_NOMBRE = $ACTIVIDAD_NOMBRE;
-        $this->ACTIVIDAD_PRECIO= $ACTIVIDAD_PRECIO;
-        $this->ACTIVIDAD_DESCRIPCION = $ACTIVIDAD_DESCRIPCION;
-        $this->CATEGORIA_ID = $CATEGORIA_ID;
-        $this->ACTIVO = $ACTIVO;
-        $this->ACTIVIDAD_LUGAR=$ACTIVIDAD_LUGAR;
-        $this->ACTIVIDAD_PROFESORES=$ACTIVIDAD_PROFESORES;
+        }
 
-        $this->ACTIVIDAD_DIA=$ACTIVIDAD_DIA;
-        $this->ACTIVIDAD_HORARIO=$ACTIVIDAD_HORARIO;
+        $str.=')
+        {
 
+        include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';';
+        foreach($atributos as $valor){
+            $str.='$this->' . $valor->name .' = $this->' . $valor->name .';
+        }
     }
+    
 
     //Conectarse a la BD
     function ConectarBD()
@@ -329,15 +267,32 @@ class ' . $tabla .'
     }
 
     //Anadir una actividad
-    function insert_actividad()
+    function insert()
     {
         $this->ConectarBD();
-        $sql = "SELECT * FROM ACTIVIDAD WHERE ACTIVIDAD_NOMBRE = \'".$this->ACTIVIDAD_NOMBRE."\'";
+        $sql = "SELECT * FROM '. $table .' WHERE ' . $clave .' = \'".$this->' . $clave .'"\'";
         $result = $this->mysqli->query($sql);
-        if($result->num_rows == 1){
-                return \'La actividad ya existe en la base de datos\';
+        if($result->num_rows == 1
+
+                        return \'Ya existe en la base de datos\';
             }else{
                     if ($result->num_rows == 0){
+
+
+
+
+
+
+
+                        //VOY POR AQUI EN EL MODELO 
+
+
+
+
+
+
+
+
                         $sql = "INSERT INTO ACTIVIDAD (ACTIVIDAD_NOMBRE, ACTIVIDAD_PRECIO, ACTIVIDAD_DESCRIPCION, CATEGORIA_ID,ACTIVO) VALUES (\'". $this->ACTIVIDAD_NOMBRE ."\',\'". $this->ACTIVIDAD_PRECIO ."\',\'". $this->ACTIVIDAD_DESCRIPCION ."\',\'". $this->CATEGORIA_ID ."\',\'". $this->ACTIVO ."\')";
 
                         $this->mysqli->query($sql);
@@ -567,10 +522,11 @@ class ' . $tabla .'
         }
             return $toret;
     }
-}';
-    
 }
+';
+    }
 
+}
 
 
 ?>
