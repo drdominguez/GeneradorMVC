@@ -460,6 +460,8 @@ function EDIT()
 
 ?> 
 ';
+
+ fwrite($file,$str);
     }
 
 }

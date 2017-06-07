@@ -42,11 +42,11 @@ echo "Vistas creadas";
 function crearADD($tabla){
 
     echo "Creando vista ADD " . $tabla . "...\n";
-    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_ADD_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_ADD_View.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
    // exit;
     $str='<?php
-     class '. strtoupper($tabla) . '_ADD { 
+     class '. $tabla . '_ADD { 
           function __construct(){ 
                 $this->render();
           }
@@ -58,7 +58,7 @@ function crearADD($tabla){
 <?php
     
          
-        include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+        include \'../Functions/' . $tabla . '_DefForm.php\';
         $lista = array(';
         $i=0;
        foreach($atributos as $valor){
@@ -85,10 +85,10 @@ function crearADD($tabla){
             <h1>
              
              <title>Añadir</title>
-<?php           echo $strings[\'Insertar ' . strtoupper($tabla) . '\'] ?><br>
+<?php           echo $strings[\'Insertar ' . $tabla . '\'] ?><br>
 			</h1>
             <h3>
-				<form id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\'>
+				<form id="form" name="form" action=\'../Controllers/' . $tabla . '_Controller.php?\' method=\'post\'>
                      <ul class="form-style-1">
 <?php
                     createForm($lista,$DefForm,$strings,\'\',true,false);
@@ -98,7 +98,7 @@ function crearADD($tabla){
                         echo $strings[\'Continuar\'] ?>>
 				    </form>
 <?php
-				echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
+				echo \'<a class="form-link" href=\\\'' . $tabla . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
 ?>
 				<br>
 
@@ -123,10 +123,10 @@ function crearADD($tabla){
 function crearSHOWALL($tabla){
  echo "Creando vista SHOWALL " . $tabla . "...
  ";
- $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_ALL_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_SHOWALL_View.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
-     class '. strtoupper($tabla) . '_DEFAULT { 
+     class '. $tabla . '_SHOWALL { 
         function __construct($array, $volver){
             $this->datos = $array;
             $this->volver = $volver;
@@ -180,9 +180,9 @@ function crearSHOWALL($tabla){
         <li><?php echo $strings[\'Usuario\'].": ". $_SESSION[\'login\']; ?></li>
     </ul>
         <?php echo \'<a href=\\\'\' . $this->volver . "\'>" . $strings[\'Volver\'] . " </a>"; ?></li>
-        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Consultar\']?>\'><?php echo $strings[\'Consultar\']?></a>
-        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'Insertar\']?>\'><?php echo $strings[\'Insertar\']?></a>
-        <a href=\'./' . strtoupper($tabla) . '_Controller.php?accion=<?php echo $strings[\'CONSULTAR BORRADO\']?>\'><?php echo $strings[\'CONSULTAR BORRADO\']?></a>
+        <a href=\'./' . $tabla . '_Controller.php?accion=<?php echo $strings[\'Consultar\']?>\'><?php echo $strings[\'Consultar\']?></a>
+        <a href=\'./' .$tabla . '_Controller.php?accion=<?php echo $strings[\'Insertar\']?>\'><?php echo $strings[\'Insertar\']?></a>
+        <a href=\'./' . $tabla . '_Controller.php?accion=<?php echo $strings[\'CONSULTAR BORRADO\']?>\'><?php echo $strings[\'CONSULTAR BORRADO\']?></a>
 
 
     
@@ -226,14 +226,14 @@ function crearSHOWALL($tabla){
 ?>
 
         <td>
-            <a href=\''. strtoupper($tabla) . '_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Modificar\']; ?>\'><?php echo $strings[\'Modificar\'] ?></a>
+            <a href=\''. $tabla . '_Controller.php?' . $clave['COLUMN_NAME'] .'=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Modificar\']; ?>\'><?php echo $strings[\'Modificar\'] ?></a>
         </td>
         <td>
-            <a href=\''. strtoupper($tabla) .'_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Borrar\']; ?>\'><?php echo $strings[\'Borrar\'] ?></a>
+            <a href=\''. $tabla) .'_Controller.php?' . $clave['COLUMN_NAME'] .'=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Borrar\']; ?>\'><?php echo $strings[\'Borrar\'] ?></a>
         </td>
 
         <td>
-            <a href=\''. strtoupper($tabla) .'_Controller.php?ACTIVIDAD_NOMBRE=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Ver\']; ?>\'><?php echo $strings[\'Ver\'] ?></a>
+            <a href=\''. $tabla .'_Controller.php?' . $clave['COLUMN_NAME'] .'=<?php echo $this->datos[$j][\'ACTIVIDAD_NOMBRE\'] . \'&accion=\'.$strings[\'Ver\']; ?>\'><?php echo $strings[\'Ver\'] ?></a>
         </td>
 
         <?php
@@ -273,10 +273,10 @@ function crearDELETE($tabla){
 
 echo "Creando vista DELETE " . $tabla . "...
 ";
- $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_DELETE_View.php","w+");
  $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
  $str='<?php
-class '. strtoupper($tabla) . '_delete{
+class '. $tabla . '_DELETE{
     //VISTA PARA BORRAR 
     private $valores;
     function __construct($valores){
@@ -286,7 +286,7 @@ class '. strtoupper($tabla) . '_delete{
     function render(){
         
                 
-                include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                include \'../Functions/' . $tabla . '_DefForm.php\';
                    $lista = array(';
         $i=0;
        foreach($atributos as $valor){
@@ -311,11 +311,11 @@ class '. strtoupper($tabla) . '_delete{
             <p>
             <h1>
             <span class="form-title">
-                <?php echo $strings[\'Borrar ' . strtoupper($tabla) . '\'] ?><br>
+                <?php echo $strings[\'Borrar ' .$tabla . '\'] ?><br>
             </h1>
             <h3>
 
-                <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                <form action=\'../Controllers/' . strtoupper($tabla . '_Controller.php?\' method=\'post\' >
                     <ul class="form-style-1">
                     <?php
                     createForm($lista,$DefForm,$strings,$this->valores,false,true);
@@ -323,7 +323,7 @@ class '. strtoupper($tabla) . '_delete{
                     <input type=\'submit\' name=\'accion\' value=<?php echo $strings[\'Borrar\'] ?>>
                 </form>
                 <?php
-                    echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
+                    echo \'<a class="form-link" href=\\\'' . $tabla . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
             </h3>
             </p>
 
@@ -342,9 +342,9 @@ class '. strtoupper($tabla) . '_delete{
 function crearEDIT($tabla){
 
 echo "Creando vista EDIT " . $tabla . "...";
- $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_DELETE_Vista.php","w+");
+ $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_EDIT_View.php","w+");
 $str='<?php
-class '. strtoupper($tabla) . '_Edit{
+class '. $tabla . '_EDIT{
 //VISTA PARA MODIFICAR 
     private $valores;
     function __construct($valores,$valores2){
@@ -361,7 +361,7 @@ class '. strtoupper($tabla) . '_Edit{
             <h2>
                 <?php
                 include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
-                include \'../Functions/ include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                include \'../Functions/ include \'../Functions/' . $tabla . '_DefForm.php\';
                 //include \'../Functions/LibraryFunctions.php\';
          $lista = array(';
         $i=0;
@@ -380,11 +380,11 @@ class '. strtoupper($tabla) . '_Edit{
             <p>
             <h1>
                 <span class="form-title">
-                <?php echo $strings[\'Modificar ' . strtoupper($tabla) . '\']?><br>
+                <?php echo $strings[\'Modificar ' . $tabla . '\']?><br>
             </h1>
             <h3>
 
-                <form  id="form" name="form" action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                <form  id="form" name="form" action=\'../Controllers/' .$tabla . '_Controller.php?\' method=\'post\' >
                     <ul class="form-style-1">
                     
                     <li> Categoria </li>
@@ -399,7 +399,7 @@ class '. strtoupper($tabla) . '_Edit{
                     <input type=\'submit\' name=\'accion\' onclick="return valida_envia4()" value=<?php echo $strings[\'Modificar\'] ?>>
                 </form>
                 <?php
-                echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
+                echo \'<a class="form-link" href=\\\'' . $tabla . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';
                 ?>
             </h3>
             </p>
@@ -417,10 +417,10 @@ function crearSHOWCURRENT($tabla){
 
     echo "Creando vista SHOW CURRENT " . $tabla . "...
 ";
-    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SHOW_CURRENT_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_SHOWCURRENT_View.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     $str='<?php
-class '. strtoupper($tabla) . '_show_current{
+class '. $tabla . '_SHOWCURRENT{
    
     private $valores;
     function __construct($valores){
@@ -430,7 +430,7 @@ class '. strtoupper($tabla) . '_show_current{
     function render(){
         
                 
-                include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+                include \'../Functions/' . $tabla . '_DefForm.php\';
                    $lista = array(';
     $i=0;
     foreach($atributos as $valor){
@@ -455,18 +455,18 @@ class '. strtoupper($tabla) . '_show_current{
             <p>
             <h1>
             <span class="form-title">
-                <?php echo $strings[\'Consultar ' . strtoupper($tabla) . '\'] ?><br>
+                <?php echo $strings[\'Consultar ' . $tabla . '\'] ?><br>
             </h1>
             <h3>
 
-                <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+                <form action=\'../Controllers/' . $tabla . '_Controller.php?\' method=\'post\' >
                     <ul class="form-style-1">
                     <?php
                     createForm($lista,$DefForm,$strings,$this->valores,false,true);
                     ?>
                 </form>
                 <?php
-                    echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
+                    echo \'<a class="form-link" href=\\\'' . $tabla . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                ?>
             </h3>
             </p>
 
@@ -484,11 +484,11 @@ class '. strtoupper($tabla) . '_show_current{
 function crearSEARCH($tabla){
     echo "Creando vista SEARCH " . $tabla . "...
 ";
-    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . strtoupper($tabla) . "_SEARCH_Vista.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Views/" . $tabla . "_SEARCH_View.php","w+");
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
     $str='<?php
 
-class '. strtoupper($tabla) . '_Show{
+class '. $tabla . 'SEARCH{
 
 function __construct(){ 
     $this->render();
@@ -503,7 +503,7 @@ function render(){
 
 <?php
     include \'../Locates/Strings_\'.$_SESSION[\'IDIOMA\'].\'.php\';
-  include \'../Functions/' . strtoupper($tabla) . '_DefForm.php\';
+  include \'../Functions/' . $tabla . '_DefForm.php\';
 $lista = array(';
     $i=0;
     foreach($atributos as $valor){
@@ -517,21 +517,21 @@ $lista = array(';
     $str .= ');
 ?>
         <h1><span class="form-title">
-            <?php echo $strings[\'Consultar ' . strtoupper($tabla) . '\']; ?><br>
+            <?php echo $strings[\'Consultar ' . $tabla . '\']; ?><br>
         </h1>
     </p>
     <p>
     <h3>
 
     <br><br>
-    <form action=\'../Controllers/' . strtoupper($tabla) . '_Controller.php?\' method=\'post\' >
+    <form action=\'../Controllers/' . $tabla . '_Controller.php?\' method=\'post\' >
         <ul class="form-style-1">
         <?php
         createForm($lista,$DefForm,$strings,$values=\'\',false,false);
 ?>
     <input type=\'submit\' name=\'accion\' value=\'<?php echo $strings[\'Consultar\']; ?>\'>
     <?php
-            echo \'<a class="form-link" href=\\\'' . strtoupper($tabla) . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                
+            echo \'<a class="form-link" href=\\\'' . $tabla . '_Controller.php\\\'>\'. $strings[\'Volver\'] . \' </a>\';                
 ?>
     </form>
     <br>
@@ -554,7 +554,7 @@ fwrite($file,$str);
 function crearArrayFormulario($tabla, $atributos){
     echo "Creando formulario ". $tabla . "\n";
 
-    $file = fopen("/var/www/html/GeneradorMVC/IUjulio/Functions/" . strtoupper($tabla) . "_DefForm.php","w+");
+    $file = fopen("/var/www/html/GeneradorMVC/IUjulio/Functions/" . $tabla . "_DefForm.php","w+");
         $str = '
         <?php
         
@@ -655,19 +655,18 @@ function listarAtributos($tabla){
 
 function obtenerClave($tabla){
      $mysqli2 = conectarBD();
-   $sql = "SHOW KEYS FROM " . $tabla . " WHERE Key_name = 'PRIMARY'";
-
+    $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.key_column_usage WHERE TABLE_NAME='". $tabla ."' AND CONSTRAINT_NAME = 'PRIMARY' ";
+     
     if (!($resultado = $mysqli2->query($sql))) {
         return 'Error en la consulta sobre la base de datos';
     } else {
-        $finfo = mysqli_fetch_fields($resultado);
-
-
+        $finfo = mysqli_fetch_assoc($resultado);
+        
+        
         return $finfo;
     }
 
 }
-
 
 
 
