@@ -63,21 +63,22 @@ function obtenerClave($tabla){
     }
 
 }
-
-
+ 
+   
 function crearControlador($tabla) {
 
 echo "Iniciando creador de controlador " . $tabla . "..."; ?>
 <br>
 
 <?php
-
+    $clave=obtenerClave($tabla);
+    
     $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
-    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Controllers/" . strtoupper($tabla) . "_Controller.php","w+");
+    $file=fopen("/var/www/html/GeneradorMVC/IUjulio/Controllers/" . $tabla . "_Controller.php","w+");
     $str='<?php 
     session_start(); //solicito trabajar con la session
 
-include \'../Models/' . strtoupper($tabla) . '_Model.php\';
+include \'../Models/' . $tabla . '_Model.php\';
 include \'../Locates/Strings_Castellano.php\';
 include \'../Functions/LibraryFunctions.php\';
 include \'../Views/MENSAJE_Vista.php\';
@@ -93,8 +94,8 @@ for ($z=0;$z<count($includes);$z++){
     include $includes[$z];
 }
 
-include \'../Views/' . strtoupper($tabla) . '_SHOW_CURRENT_Vista.php\';
-include \'../Views/' . strtoupper($tabla) . '_SEARCH_Vista.php\';
+include \'../Views/' . $tabla . '_SHOW_CURRENT_Vista.php\';
+include \'../Views/' . $tabla . '_SEARCH_Vista.php\';
 
 function get_data_form(){
 
@@ -117,7 +118,7 @@ function get_data_form(){
     foreach ($atributos as $valor) {
         if($i==0) {
             $str.= '$' . $valor->name .'';
-    7    }else{
+       }else{
             $str.= ',$' . $valor->name .'';
         }
     }
@@ -132,9 +133,7 @@ if (!isset($_REQUEST[\'accion\'])){
     ';
 
 
-    $clave=obtenerClave($tabla);
-    
-    
+
 
     $str.='
     Switch ($_REQUEST[\'accion\']) {
@@ -152,8 +151,8 @@ if (!isset($_REQUEST[\'accion\'])){
         case $strings[\'Borrar\']: //Borrado de actividades
            if (!$_POST){
                     $' . $tabla .' = new ' . $tabla .'_Model(  $_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
-                    for(int i=0;i<$atributos.length;i++){
-                        if(i==0){
+                    for($i=0;$i<count($clave);$i++){
+                        if($i==0){
                          $str.=',\'\'';
                         }else{
                          $str.='\'\'';
@@ -171,8 +170,8 @@ if (!isset($_REQUEST[\'accion\'])){
                 break;
         case $strings[\'Ver\']: 
                 $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
-                    for(int i=0;i<$atributos.length;i++){
-                        if(i==0){
+                    for($i=0;$i<count($clave);$i++){
+                        if($i==0){
                          $str.=',\'\'';
                         }else{
                          $str.='\'\'';
@@ -185,8 +184,8 @@ if (!isset($_REQUEST[\'accion\'])){
         case $strings[\'Modificar\']: //Modificación de actividades
 if (!$_POST){
                     $' . $tabla .' = new ' . $tabla .'_Model($_REQUEST[\'' . $clave['COLUMN_NAME'] .'\']';
-                    for(int i=0;i<$atributos.length;i++){
-                        if(i==0){
+                   for($i=0;$i<count($clave);$i++){
+                        if($i==0){
                          $str.=',\'\'';
                         }else{
                          $str.='\'\'';
@@ -218,8 +217,8 @@ if (!$_POST){
         default:
            if (!$_POST){
                     $' . $tabla .' = new ' . $tabla .'_Model(\'\'';
-                    for(int i=0;i<$atributos.length;i++){
-                        if(i==0){
+                    for($i=0;$i<count($clave);$i++){
+                        if($i==0){
                          $str.=',\'\'';
                         }else{
                          $str.='\'\'';
@@ -252,7 +251,8 @@ function crearModelo($tabla){
     <br>
     <?php
 
-
+$clave=obtenerClave($tabla);
+    
 
         $atributos = listarAtributos($tabla);//Cogemos los atributos de la tabla y los pasamos a un array
         $file=fopen("/var/www/html/GeneradorPag/IUjulio/Models/" . $tabla . "_Model.php","w+");
@@ -300,7 +300,7 @@ class ' . $tabla .'_Model
     function ADD()
     {
         $this->ConectarBD();
-       if (($this->' . $clave['COLUMN_NAME'] .' <> '')){
+       if ($this->' . $clave['COLUMN_NAME'] .' <> \'\'){
         
         $sql = "SELECT * FROM ' . $tabla .' WHERE (' . $clave['COLUMN_NAME'] .' = $this->' . $clave['COLUMN_NAME'] .')";
 
